@@ -1,2 +1,2 @@
-model_checkpoint_path: "ALL_CORPS.ckpt"
-all_model_checkpoint_paths: "ALL_CORPS.ckpt"
+model_checkpoint_path: "002790.ckpt"
+all_model_checkpoint_paths: "002790.ckpt"
