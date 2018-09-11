@@ -6,8 +6,9 @@ import numpy as np
 class TrainsData:
     """학습을 위한 데이터를 만든다."""
 
-    def __init__(self, params):
+    def __init__(self, params, y_is_up_down=False):
         self.params = params
+        self.y_is_up_down = y_is_up_down  # 결과 값을 오르는지 내리는 지로 수정함
 
     @staticmethod
     def to_ndarray(cols_data):
@@ -44,11 +45,22 @@ class TrainsData:
         dataY = []
         seq_length = self.params['seq_length']
         y_len = len(y)
-        for i in range(0, y_len - seq_length):
-            _x = x[i:i + seq_length]
-            _y = y[i + seq_length]  # Next close price
-            dataX.append(_x)
-            dataY.append(_y)
+
+        if not self.y_is_up_down:
+            for i in range(0, y_len - seq_length):
+                _x = x[i:i + seq_length]
+                _y = y[i + seq_length]  # Next close price
+                dataX.append(_x)
+                dataY.append(_y)
+        else:
+            for i in range(0, y_len - seq_length):
+                _x = x[i:i + seq_length]
+                _y = 0
+                if 0 != i and y[i + seq_length] > y[i + seq_length -1]:
+                    _y = 1
+                dataX.append(_x)
+                dataY.append(_y)
+
         dataX_last = [x[y_len - seq_length: y_len]]
         return dataX, dataY, y, dataX_last
 

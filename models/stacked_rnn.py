@@ -4,8 +4,9 @@ import tensorflow as tf
 class StackedRnn:
     """학습 모델을 정의한다."""
 
-    def __init__(self, params):
+    def __init__(self, params, y_is_up_down=False):
         self.params = params
+        self.y_is_up_down = y_is_up_down  # 결과 값을 오르는지 내리는 지로 수정함
 
     def get_stacted_rnn_model(self):
         """Stacted RNN Model을 그린다."""
@@ -30,7 +31,10 @@ class StackedRnn:
             outputs[:, -1], self.params['output_dim'], activation_fn=None)  # We use the last cell's output
 
         # cost/loss
-        loss = tf.reduce_sum(tf.square((Y - Y_pred) / (1 + Y - X_closes)))
+        if not self.y_is_up_down:
+            loss = tf.reduce_sum(tf.square((Y - Y_pred) / (1 + Y - X_closes)))
+        else:
+            loss = tf.reduce_sum(tf.square(Y - Y_pred))
 
         optimizer = tf.train.AdamOptimizer(self.params['learning_rate'])
         train = optimizer.minimize(loss)
@@ -38,7 +42,10 @@ class StackedRnn:
         # RMSE
         targets = tf.placeholder(tf.float32, [None, 1])
         predictions = tf.placeholder(tf.float32, [None, 1])
-        rmse = tf.sqrt(tf.reduce_mean(tf.square((targets - predictions) / (1 + targets - X_closes))))
+        if not self.y_is_up_down:
+            rmse = tf.sqrt(tf.reduce_mean(tf.square((targets - predictions) / (1 + targets - X_closes))))
+        else:
+            rmse = tf.sqrt(tf.reduce_mean(tf.square(targets - predictions)))
 
         return {
             'X': X,
