@@ -48,7 +48,7 @@ def let_train_invests(corps, params, params_all, start_no=1, reult_file_name='tw
 
 def main(start_no=1, params=None, reult_file_name='twins_result'):
     corp = Corp()
-    corps = corp.get_corps('2004-12-31', ['회사명', '종목코드'])
+    corps = corp.get_corps('1976-05-20', ['회사명', '종목코드'])
 
     if params is None:
         params = {

@@ -42,7 +42,7 @@ def let_train_invests(corps, params, start_no=1):
 
 def main(start_no=1):
     corp = Corp()
-    corps = corp.get_corps('2004-12-31', ['회사명', '종목코드'])
+    corps = corp.get_corps('1976-05-20', ['회사명', '종목코드'])
     params = {
         'seq_length': 5,  # 시퀀스 갯수
         'data_dim': 5,  # 입력 데이터 갯수

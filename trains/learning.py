@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import matplotlib.font_manager as fm
 import matplotlib as mpl
 from data.data_utils import DataUtils
+from models.stacked_rnn import StackedRnn
 
 
 class Learning:
@@ -22,52 +23,6 @@ class Learning:
         else:
             file_name = DataUtils.to_string_corp_code(corp_code)
         return "./data/files/sessions/" + file_name + ".ckpt"
-
-    def draw_graph(self):
-        """텐스플로우 변수관계 그래프롤 그린다."""
-        seq_length = self.params['seq_length']
-        data_dim = self.params['data_dim']
-        hidden_dims = self.params['hidden_dims']
-
-        tf.reset_default_graph()
-        X = tf.placeholder(tf.float32, [None, seq_length, data_dim])
-        X_closes = tf.placeholder(tf.float32, [None, 1])
-        Y = tf.placeholder(tf.float32, [None, 1])
-        output_keep_prob = tf.placeholder(tf.float32)
-
-        cells = []
-        for n in hidden_dims:
-            cell = tf.contrib.rnn.BasicLSTMCell(num_units=n, activation=tf.tanh)
-            dropout_cell = tf.contrib.rnn.DropoutWrapper(cell, output_keep_prob=output_keep_prob)
-            cells.append(dropout_cell)
-        stacked_rnn_cell = tf.nn.rnn_cell.MultiRNNCell(cells)
-        outputs, _states = tf.nn.dynamic_rnn(stacked_rnn_cell, X, dtype=tf.float32)
-        Y_pred = tf.contrib.layers.fully_connected(
-            outputs[:, -1], self.params['output_dim'], activation_fn=None)  # We use the last cell's output
-
-        # cost/loss
-        loss = tf.reduce_sum(tf.square((Y - Y_pred) / (1 + Y - X_closes)))
-
-        optimizer = tf.train.AdamOptimizer(self.params['learning_rate'])
-        train = optimizer.minimize(loss)
-
-        # RMSE
-        targets = tf.placeholder(tf.float32, [None, 1])
-        predictions = tf.placeholder(tf.float32, [None, 1])
-        rmse = tf.sqrt(tf.reduce_mean(tf.square((targets - predictions) / (1 + targets - X_closes))))
-
-        return {
-            'X': X,
-            'Y': Y,
-            'output_keep_prob': output_keep_prob,
-            'train': train,
-            'loss': loss,
-            'Y_pred': Y_pred,
-            'targets': targets,
-            'rmse': rmse,
-            'predictions': predictions,
-            'X_closes': X_closes
-        }
 
     def draw_plot(self, rmse_vals, test_predict, invest_predicts, comp_name, data_params):
         testY = data_params['testY']
@@ -165,5 +120,6 @@ class Learning:
 
     def let_learning(self, comp_code, data_params):
         """그래프를 그리고 학습을 시킨다."""
-        graph_params = self.draw_graph()
+        stacked_rnn = StackedRnn(self.params)
+        graph_params = stacked_rnn.get_stacted_rnn_model()
         return self.let_training(graph_params, comp_code, data_params)

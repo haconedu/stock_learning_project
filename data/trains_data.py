@@ -1,7 +1,6 @@
 from pandas import Series, DataFrame
 from sklearn import preprocessing
 import numpy as np
-from data.stocks import Stocks
 
 
 class TrainsData:
