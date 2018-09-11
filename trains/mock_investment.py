@@ -8,28 +8,54 @@ from models.stacked_rnn import StackedRnn
 class MockInvestment:
     """모의투자"""
 
-    def __init__(self, params, is_all_corps_model=False, session_file_name='ALL_CORPS'):
+    def __init__(self, params, is_all_corps_model=False, session_file_name='ALL_CORPS', y_is_up_down=False):
         self.params = params
         self.all_corps_model = is_all_corps_model
         self.session_file_name = session_file_name
+        self.y_is_up_down = y_is_up_down  # 결과 값을 오르는지 내리는 지로 수정함
 
     def let_invest_money(self, invest_predict, now_scaled_close, now_close, now_money, now_stock_cnt):
         """예측 값에 따라 매수 매도를 실행한다."""
-        fee_percent = self.params['fee_percent']
+        if not self.y_is_up_down:
+            return self.let_invest_money_value(invest_predict, now_scaled_close, now_close, now_money, now_stock_cnt)
+        else:
+            return self.let_invest_money_up_down(invest_predict, now_close, now_money, now_stock_cnt)
+
+    def let_invest_money_value(self, invest_predict, now_scaled_close, now_close, now_money, now_stock_cnt):
+        """예측 값에 따라 매수 매도를 실행한다."""
         invest_min_percent = self.params['invest_min_percent']
 
         ratio = (invest_predict - now_scaled_close) / now_scaled_close * 100
 
         if ratio > invest_min_percent:
-            cnt = math.floor(now_money / now_close)
-            if cnt > 0:
-                fee = now_close * fee_percent / 100
-                now_money -= (now_close + fee) * cnt
-                now_stock_cnt += cnt
+            now_money, now_stock_cnt = self.buy_stock(now_money, now_close, now_stock_cnt)
         elif ratio < -invest_min_percent:
-            if now_stock_cnt > 0:
-                now_money += self.to_money(now_close, now_stock_cnt)
-                now_stock_cnt = 0
+            now_money, now_stock_cnt = self.sell_stock(now_money, now_close, now_stock_cnt)
+        return now_money, now_stock_cnt
+
+    def let_invest_money_up_down(self, invest_predict, now_close, now_money, now_stock_cnt):
+        """예측 값에 따라 매수 매도를 실행한다."""
+        if invest_predict == 1:
+            now_money, now_stock_cnt = self.buy_stock(now_money, now_close, now_stock_cnt)
+        else:
+            now_money, now_stock_cnt = self.sell_stock(now_money, now_close, now_stock_cnt)
+        return now_money, now_stock_cnt
+
+    def buy_stock(self, now_money, now_close, now_stock_cnt):
+        """주식을 산다."""
+        fee_percent = self.params['fee_percent']
+        cnt = math.floor(now_money / now_close)
+        if cnt > 0:
+            fee = now_close * fee_percent / 100
+            now_money -= (now_close + fee) * cnt
+            now_stock_cnt += cnt
+        return now_money, now_stock_cnt
+    
+    def sell_stock(self, now_money, now_close, now_stock_cnt):
+        """주식을 판다."""
+        if now_stock_cnt > 0:
+            now_money += self.to_money(now_close, now_stock_cnt)
+            now_stock_cnt = 0
         return now_money, now_stock_cnt
 
     def to_money(self, now_stock_cnt, now_close):
@@ -76,8 +102,6 @@ class MockInvestment:
         with tf.Session() as sess:
             init = tf.global_variables_initializer()
             sess.run(init)
-
-
             saver.restore(sess, session_file_path)
 
             all_invest_money = invest_money

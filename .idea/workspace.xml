@@ -2,12 +2,21 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="60f54aab-0a91-4408-b212-2aff4868bd1f" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/project.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/project.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/files/sessions/001040.ckpt.data-00000-of-00001" beforeDir="false" afterPath="$PROJECT_DIR$/data/files/sessions/001040.ckpt.data-00000-of-00001" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/files/sessions/001040.ckpt.index" beforeDir="false" afterPath="$PROJECT_DIR$/data/files/sessions/001040.ckpt.index" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/files/sessions/001040.ckpt.meta" beforeDir="false" afterPath="$PROJECT_DIR$/data/files/sessions/001040.ckpt.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/files/sessions/checkpoint" beforeDir="false" afterPath="$PROJECT_DIR$/data/files/sessions/checkpoint" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/files/stocks/001040.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data/files/stocks/001040.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/files/sessions/ALL_CORPS_2.ckpt.data-00000-of-00001" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/files/sessions/ALL_CORPS_2.ckpt.index" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/files/sessions/ALL_CORPS_2.ckpt.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/model_evaluation_all_data.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/model_evaluation_all_data.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model_evaluation_all_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/model_evaluation_all_data.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/result/training_invest_all_result.xlsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/result/training_invest_all_result_2.xlsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/result/training_invest_result.xlsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/result/training_invest_result_1-210.xlsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/result/training_invest_result_191-280.xlsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/result/training_invest_result_view.xlsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/trains/mock_investment.py" beforeDir="false" afterPath="$PROJECT_DIR$/trains/mock_investment.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -58,18 +67,19 @@
     <session id="-1399240090">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.open.time.11" value="1" />
-          <entry key="project.opened" value="1" />
+          <entry key="project.closed" value="1" />
+          <entry key="project.open.time.11" value="2" />
+          <entry key="project.opened" value="2" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="py" value="11" />
+          <entry key="py" value="375" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Python" value="11" />
+          <entry key="Python" value="375" />
         </counts>
       </usages-collector>
     </session>
@@ -111,11 +121,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/model_evaluation.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="462">
-              <caret line="49" column="39" selection-start-line="49" selection-start-column="39" selection-end-line="49" selection-end-column="39" />
+            <state relative-caret-position="-8">
+              <caret line="9" column="55" selection-start-line="9" selection-start-column="55" selection-end-line="9" selection-end-column="55" />
               <folding>
                 <element signature="e#0#19#0" expanded="true" />
               </folding>
@@ -135,10 +145,12 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/model_evaluation_all_data.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="342">
-              <caret line="25" column="22" selection-start-line="25" selection-start-column="22" selection-end-line="25" selection-end-column="22" />
+            <state relative-caret-position="1050">
+              <caret line="90" selection-start-line="90" selection-end-line="90" />
               <folding>
                 <element signature="e#0#19#0" expanded="true" />
+                <marker date="1536676968035" expanded="true" signature="2016:3311" ph="..." />
+                <marker date="1536676968035" expanded="true" signature="2816:2894" ph="..." />
               </folding>
             </state>
           </provider>
@@ -147,8 +159,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/next_forcast.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="936">
-              <caret line="58" column="30" selection-start-line="58" selection-start-column="29" selection-end-line="58" selection-end-column="30" />
+            <state>
+              <caret line="58" column="30" selection-start-line="58" selection-start-column="30" selection-end-line="58" selection-end-column="30" />
             </state>
           </provider>
         </entry>
@@ -156,11 +168,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/data/trains_data.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="126">
+            <state relative-caret-position="200">
               <caret line="10" column="65" selection-start-line="10" selection-start-column="8" selection-end-line="10" selection-end-column="65" />
-              <folding>
-                <element signature="e#0#36#0" expanded="true" />
-              </folding>
             </state>
           </provider>
         </entry>
@@ -168,11 +177,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/trains/learning.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2088">
-              <caret line="123" column="58" selection-start-line="122" selection-start-column="8" selection-end-line="123" selection-end-column="58" />
-              <folding>
-                <element signature="e#0#18#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="175">
+              <caret line="17" selection-start-line="17" selection-end-line="17" />
             </state>
           </provider>
         </entry>
@@ -180,23 +186,20 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/models/stacked_rnn.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="630">
+            <state>
               <caret line="35" column="13" selection-start-line="35" selection-start-column="13" selection-end-line="35" selection-end-column="13" />
-              <folding>
-                <marker date="1536653429974" expanded="true" signature="43:48" ph="..." />
-                <marker date="1536653429974" expanded="true" signature="43:67" ph="..." />
-              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/trains/mock_investment.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1206">
-              <caret line="71" column="25" selection-start-line="71" selection-start-column="25" selection-end-line="71" selection-end-column="25" />
+            <state relative-caret-position="226">
+              <caret line="30" column="39" selection-start-line="30" selection-start-column="12" selection-end-line="30" selection-end-column="39" />
               <folding>
-                <element signature="e#0#23#0" expanded="true" />
+                <marker date="1536679359462" expanded="true" signature="618:892" ph="..." />
+                <marker date="1536679359462" expanded="true" signature="2011:2510" ph="..." />
               </folding>
             </state>
           </provider>
@@ -214,7 +217,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/model_evaluation_twins.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="774">
+            <state>
               <caret line="50" column="57" selection-start-line="50" selection-start-column="57" selection-end-line="50" selection-end-column="57" />
               <folding>
                 <element signature="e#0#19#0" expanded="true" />
@@ -253,23 +256,23 @@
         <option value="$PROJECT_DIR$/model_eval.ipynb" />
         <option value="$PROJECT_DIR$/next_forcast.ipynb" />
         <option value="$PROJECT_DIR$/data/data_utils.py" />
-        <option value="$PROJECT_DIR$/model_evaluation_all_data.ipynb" />
-        <option value="$PROJECT_DIR$/trains/learning.py" />
-        <option value="$PROJECT_DIR$/trains/mock_investment.py" />
         <option value="$PROJECT_DIR$/model_evaluation_twins.py" />
         <option value="$PROJECT_DIR$/model_evaluation.py" />
-        <option value="$PROJECT_DIR$/model_evaluation_all_data.py" />
         <option value="$PROJECT_DIR$/next_forcast.py" />
         <option value="$PROJECT_DIR$/data/trains_data.py" />
         <option value="$PROJECT_DIR$/models/stacked_rnn.py" />
+        <option value="$PROJECT_DIR$/model_evaluation_all_data.ipynb" />
+        <option value="$PROJECT_DIR$/model_evaluation_all_data.py" />
+        <option value="$PROJECT_DIR$/trains/learning.py" />
+        <option value="$PROJECT_DIR$/trains/mock_investment.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="1296" />
-    <option name="y" value="-292" />
-    <option name="width" value="1936" />
-    <option name="height" value="1096" />
+    <option name="x" value="-11" />
+    <option name="y" value="-11" />
+    <option name="width" value="1943" />
+    <option name="height" value="1043" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="2" id="Add" />
@@ -279,6 +282,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -305,7 +309,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -335,7 +338,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.model_evaluation">
+  <component name="RunManager" selected="Python.model_evaluation_all_data">
     <configuration name="model_evaluation" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="project" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -428,8 +431,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.model_evaluation" />
         <item itemvalue="Python.model_evaluation_all_data" />
+        <item itemvalue="Python.model_evaluation" />
         <item itemvalue="Python.next_forcast" />
         <item itemvalue="Python.model_evaluation_twins" />
       </list>
@@ -466,15 +469,14 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="1358" y="-288" width="1936" height="1096" extended-state="6" />
-    <editor active="true" />
+    <frame x="-7" y="-7" width="1295" height="695" extended-state="6" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.17492098" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.16772655" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32976827" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.3253638" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.15151516" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -572,6 +574,16 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/model_evaluation.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-8">
+          <caret line="9" column="55" selection-start-line="9" selection-start-column="55" selection-end-line="9" selection-end-column="55" />
+          <folding>
+            <element signature="e#0#19#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/next_forcast.ipynb">
       <provider selected="true" editor-type-id="ipnb-editor">
         <state>
@@ -579,50 +591,26 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/model_evaluation_all_data.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="342">
-          <caret line="25" column="22" selection-start-line="25" selection-start-column="22" selection-end-line="25" selection-end-column="22" />
-          <folding>
-            <element signature="e#0#19#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/next_forcast.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="936">
-          <caret line="58" column="30" selection-start-line="58" selection-start-column="29" selection-end-line="58" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/trains/learning.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2088">
-          <caret line="123" column="58" selection-start-line="122" selection-start-column="8" selection-end-line="123" selection-end-column="58" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-          </folding>
+        <state>
+          <caret line="58" column="30" selection-start-line="58" selection-start-column="30" selection-end-line="58" selection-end-column="30" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/models/stacked_rnn.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="630">
+        <state>
           <caret line="35" column="13" selection-start-line="35" selection-start-column="13" selection-end-line="35" selection-end-column="13" />
-          <folding>
-            <marker date="1536653429974" expanded="true" signature="43:48" ph="..." />
-            <marker date="1536653429974" expanded="true" signature="43:67" ph="..." />
-          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/trains/mock_investment.py">
+    <entry file="file://$PROJECT_DIR$/model_evaluation_twins.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1206">
-          <caret line="71" column="25" selection-start-line="71" selection-start-column="25" selection-end-line="71" selection-end-column="25" />
+        <state>
+          <caret line="50" column="57" selection-start-line="50" selection-start-column="57" selection-end-line="50" selection-end-column="57" />
           <folding>
-            <element signature="e#0#23#0" expanded="true" />
+            <element signature="e#0#19#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -634,32 +622,39 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/model_evaluation_twins.py">
+    <entry file="file://$PROJECT_DIR$/model_evaluation_all_data.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="774">
-          <caret line="50" column="57" selection-start-line="50" selection-start-column="57" selection-end-line="50" selection-end-column="57" />
+        <state relative-caret-position="1050">
+          <caret line="90" selection-start-line="90" selection-end-line="90" />
           <folding>
             <element signature="e#0#19#0" expanded="true" />
+            <marker date="1536676968035" expanded="true" signature="2016:3311" ph="..." />
+            <marker date="1536676968035" expanded="true" signature="2816:2894" ph="..." />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/data/trains_data.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="126">
+        <state relative-caret-position="200">
           <caret line="10" column="65" selection-start-line="10" selection-start-column="8" selection-end-line="10" selection-end-column="65" />
-          <folding>
-            <element signature="e#0#36#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/model_evaluation.py">
+    <entry file="file://$PROJECT_DIR$/trains/learning.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="462">
-          <caret line="49" column="39" selection-start-line="49" selection-start-column="39" selection-end-line="49" selection-end-column="39" />
+        <state relative-caret-position="175">
+          <caret line="17" selection-start-line="17" selection-end-line="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/trains/mock_investment.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="226">
+          <caret line="30" column="39" selection-start-line="30" selection-start-column="12" selection-end-line="30" selection-end-column="39" />
           <folding>
-            <element signature="e#0#19#0" expanded="true" />
+            <marker date="1536679359462" expanded="true" signature="618:892" ph="..." />
+            <marker date="1536679359462" expanded="true" signature="2011:2510" ph="..." />
           </folding>
         </state>
       </provider>

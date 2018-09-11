@@ -41,13 +41,9 @@ def let_train_invests(corps, params, start_no=1, session_file_name='ALL_CORPS',
             DataUtils.save_excel(df_comp_rmses, './result/' + result_file_name + '.xlsx')
         no += 1
 
-        
-def main(start_no=1, params=None, session_file_name = 'ALL_CORPS',  result_file_name='training_invest_all_result'):
-    corp = Corp()
-    corps = corp.get_corps('1976-05-20', ['회사명', '종목코드'])
 
-    if params is None:
-        params = {
+def get_basic_params():
+    return {
             'seq_length': 5,  # 시퀀스 갯수
             'data_dim': 5,  # 입력 데이터 갯수
             'hidden_dims': [128, 96, 64],  # 히든 레이어 갯수
@@ -65,8 +61,30 @@ def main(start_no=1, params=None, session_file_name = 'ALL_CORPS',  result_file_
             'invest_min_percent': 0.6,  # 투자를 하는 최소 간격 퍼센트
             'kor_font_path': 'C:\\WINDOWS\\Fonts\\H2GTRM.TTF'
         }
+
+
+def get_corps():
+    corp = Corp()
+    return corp.get_corps('1976-05-20', ['회사명', '종목코드'])
+
+
+def train_to_one_session_deep(start_no=1, params=None, session_file_name='ALL_CORPS_DEEP',
+                              result_file_name='training_invest_all_deep_result'):
+    corps = get_corps()
+
+    if params is None:
+        params = get_basic_params()
+        params['hidden_dims'] = [128, 128, 128, 128, 96, 96, 96, 64, 64]
+    let_train_invests(corps, params, start_no, session_file_name, result_file_name)
+
+
+def train_to_one_session(start_no=1, params=None, session_file_name='ALL_CORPS',  result_file_name='training_invest_all_result'):
+    corps = corps = get_corps()
+
+    if params is None:
+        params = get_basic_params()
     let_train_invests(corps, params, start_no, session_file_name, result_file_name)
 
 
 if __name__ == '__main__':
-    main()
+    train_to_one_session_deep()
