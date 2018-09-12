@@ -7,11 +7,11 @@ from trains.mock_investment import MockInvestment
 from data.data_utils import DataUtils
 
 
-def let_train_invest(corp_code, corp_name, params, no, session_file_name = 'ALL_CORPS'):
+def let_train_invest(corp_code, corp_name, params, no, session_file_name = 'ALL_CORPS', y_is_up_down=False):
     stocks = Stocks()
-    trains_data = TrainsData(params)
+    trains_data = TrainsData(params, y_is_up_down)
     learning = Learning(params, True, session_file_name)
-    invest = MockInvestment(params, True, session_file_name)
+    invest = MockInvestment(params, True, session_file_name, y_is_up_down)
 
     stock_data = stocks.get_stock_data(corp_code)
     data_params, scaler_close, dataX_last = trains_data.get_train_test(stock_data)
@@ -23,7 +23,7 @@ def let_train_invest(corp_code, corp_name, params, no, session_file_name = 'ALL_
 
 
 def let_train_invests(corps, params, start_no=1, session_file_name='ALL_CORPS',
-                      result_file_name='training_invest_all_result'):
+                      result_file_name='training_invest_all_result', y_is_up_down=False):
     comp_rmses = []
     no = 1
     for index, corp_data in corps.iterrows():
@@ -32,7 +32,7 @@ def let_train_invests(corps, params, start_no=1, session_file_name='ALL_CORPS',
             continue
         corp_code = corp_data['종목코드']
         corp_name = corp_data['회사명']
-        result = let_train_invest(corp_code, corp_name, params, no, session_file_name)
+        result = let_train_invest(corp_code, corp_name, params, no, session_file_name, y_is_up_down)
         comp_rmses.append(result)
         if no % 10 == 0:
             df_comp_rmses = pd.DataFrame(comp_rmses,
@@ -97,5 +97,14 @@ def train_to_one_session(start_no=1, params=None, session_file_name='ALL_CORPS',
     let_train_invests(corps, params, start_no, session_file_name, result_file_name)
 
 
+def train_up_down_to_one_session(start_no=1, params=None, session_file_name='ALL_CORPS_UPDOWN',
+                         result_file_name='training_invest_all_updown_result'):
+    corps = get_corps()
+
+    if params is None:
+        params = get_basic_params()
+    let_train_invests(corps, params, start_no, session_file_name, result_file_name, True)
+
+
 if __name__ == '__main__':
-    train_to_one_session(21)
+    train_to_one_session()

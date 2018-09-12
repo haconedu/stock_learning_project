@@ -50,10 +50,10 @@ def main(start_no=1):
         'dropout_keep': 0.8,  # dropout
         'output_dim': 1,  # 출력 데이터 갯수
         'learning_rate': 0.0001,
-        'iterations': [24, 100],  # 최소, 최대 훈련 반복횟수
+        'iterations': [24, 1000],  # 최소, 최대 훈련 반복횟수
         'rmse_max': 0.05,
         'train_percent': 80.0,  # 훈련 데이터 퍼센트
-        'loss_up_count': 12,  # early stopping
+        'loss_up_count': 100,  # early stopping
         'invest_count': 20,  # 투자 횟수
         'invest_money': 10000000,  # 각 주식에 모의투자할 금액
         'fee_percent': 0.015,  # 투자시 발생하는 수수료
