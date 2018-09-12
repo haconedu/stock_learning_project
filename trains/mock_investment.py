@@ -113,7 +113,7 @@ class MockInvestment:
                 predicts.append(invest_predicts[0])
 
                 invest_predict = invest_predicts[0][0]
-                now_scaled_close = investCloses[0][0]
+                now_scaled_close = investCloses[i][0]
                 now_close = investRealCloses[i]
                 # print(invest_predict, now_scaled_close, now_close)
                 invest_money, now_stock_cnt = self.let_invest_money(invest_predict, now_scaled_close, now_close,
@@ -174,7 +174,7 @@ class MockInvestment:
 
             invest_predict = np.mean([invest_predict, invest_predict_all])
             predicts.append([invest_predict])
-            now_scaled_close = investCloses[0][0]
+            now_scaled_close = investCloses[i][0]
             now_close = investRealCloses[i]
             # print(invest_predict, now_scaled_close, now_close)
             invest_money, now_stock_cnt = self.let_invest_money(invest_predict, now_scaled_close, now_close,
@@ -186,6 +186,21 @@ class MockInvestment:
         invest_money += self.to_money(now_stock_cnt, now_close)
         all_invest_money += self.to_money(all_stock_count, now_close)
 
-        last_predict = sess.run(Y_pred, feed_dict={X: dataX_last, output_keep_prob: 1.0})
+        # 마지막 예측 값을 구한다.
+        saver = tf.train.Saver()
+        with tf.Session() as sess:
+            init = tf.global_variables_initializer()
+            sess.run(init)
+            saver.restore(sess, file_path)
+            last_predict = sess.run(Y_pred, feed_dict={X: dataX_last, output_keep_prob: 1.0})
+
+        saver_all = tf.train.Saver()
+        with tf.Session() as sess_all:
+            init_all = tf.global_variables_initializer()
+            sess_all.run(init_all)
+            saver_all.restore(sess_all, file_path_all)
+            last_predict_all = sess.run(Y_pred, feed_dict={X: dataX_last, output_keep_prob: 1.0})
+
+        last_predict = np.mean([last_predict, last_predict_all])
 
         return invest_money, last_predict, predicts, all_invest_money

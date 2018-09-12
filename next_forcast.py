@@ -48,6 +48,7 @@ def let_train_invests(corp_names, params):
                                           'last_pred_money', 'last_pred_ratio'])
     DataUtils.save_excel(df_comp_rmses, './result/forcast_result.xlsx')
 
+
 def main(corp_names = ["삼성중공업","기아자동차", "게임빌","루트로닉", "영진약품", "대아티아이"]):
     params = {
         'seq_length': 5,  # 시퀀스 갯수

@@ -50,7 +50,7 @@ def get_basic_params():
             'dropout_keep': 0.8,  # dropout
             'output_dim': 1,  # 출력 데이터 갯수
             'learning_rate': 0.0001,
-            'iterations': [24, 1000],  # 최소, 최대 훈련 반복횟수
+            'iterations': [24, 100],  # 최소, 최대 훈련 반복횟수
             'rmse_max': 0.05,
             'train_percent': 80.0,  # 훈련 데이터 퍼센트
             'loss_up_count': 12,  # early stopping
@@ -69,7 +69,7 @@ def get_corps():
 
 
 def train_to_one_session_deep(start_no=1, params=None, session_file_name='ALL_CORPS_DEEP',
-                              result_file_name='training_invest_all_deep_result'):
+                              result_file_name='training_invest_deep_all_result'):
     corps = get_corps()
 
     if params is None:
@@ -78,8 +78,19 @@ def train_to_one_session_deep(start_no=1, params=None, session_file_name='ALL_CO
     let_train_invests(corps, params, start_no, session_file_name, result_file_name)
 
 
-def train_to_one_session(start_no=1, params=None, session_file_name='ALL_CORPS',  result_file_name='training_invest_all_result'):
-    corps = corps = get_corps()
+def train_to_one_session_deep2(start_no=1, params=None, session_file_name='ALL_CORPS_DEEP2',
+                              result_file_name='training_invest_deep2_all_result'):
+    corps = get_corps()
+
+    if params is None:
+        params = get_basic_params()
+        params['hidden_dims'] = [256, 256, 256, 128, 128, 128, 64, 64, 64, 32, 32, 32]
+    let_train_invests(corps, params, start_no, session_file_name, result_file_name)
+
+
+def train_to_one_session(start_no=1, params=None, session_file_name='ALL_CORPS',
+                         result_file_name='training_invest_all_result'):
+    corps = get_corps()
 
     if params is None:
         params = get_basic_params()
@@ -87,4 +98,4 @@ def train_to_one_session(start_no=1, params=None, session_file_name='ALL_CORPS',
 
 
 if __name__ == '__main__':
-    train_to_one_session_deep()
+    train_to_one_session(21)

@@ -50,7 +50,7 @@ def main(start_no=1):
         'dropout_keep': 0.8,  # dropout
         'output_dim': 1,  # 출력 데이터 갯수
         'learning_rate': 0.0001,
-        'iterations': [24, 10000],  # 최소, 최대 훈련 반복횟수
+        'iterations': [24, 100],  # 최소, 최대 훈련 반복횟수
         'rmse_max': 0.05,
         'train_percent': 80.0,  # 훈련 데이터 퍼센트
         'loss_up_count': 12,  # early stopping
