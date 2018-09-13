@@ -10,7 +10,7 @@ from data.data_utils import DataUtils
 def let_train_invest(corp_code, corp_name, params, no, session_file_name = 'ALL_CORPS', y_is_up_down=False):
     stocks = Stocks()
     trains_data = TrainsData(params, y_is_up_down)
-    learning = Learning(params, True, session_file_name)
+    learning = Learning(params, True, session_file_name, y_is_up_down)
     invest = MockInvestment(params, True, session_file_name, y_is_up_down)
 
     stock_data = stocks.get_stock_data(corp_code)
@@ -107,4 +107,4 @@ def train_up_down_to_one_session(start_no=1, params=None, session_file_name='ALL
 
 
 if __name__ == '__main__':
-    train_to_one_session()
+    train_up_down_to_one_session()

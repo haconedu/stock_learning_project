@@ -115,7 +115,7 @@ class MockInvestment:
                 invest_predict = invest_predicts[0][0]
                 now_scaled_close = investCloses[i][0]
                 now_close = investRealCloses[i]
-                # print(invest_predict, now_scaled_close, now_close)
+                print(invest_predict, now_scaled_close, now_close)
                 invest_money, now_stock_cnt = self.let_invest_money(invest_predict, now_scaled_close, now_close,
                                                                     invest_money, now_stock_cnt)
                 if i == 0:
@@ -130,6 +130,11 @@ class MockInvestment:
 
     def let_invest_and_all(self, comp_code, train_cnt, dataX_last, data_params, all_sess_name='ALL_CORPS'):
         """학습 후 모의 주식 거래를 한다."""
+
+        stacked_rnn = StackedRnn(self.params)
+        learning = Learning(self.params)
+        learning_all = Learning(self.params, True, all_sess_name)
+
         invest_count = self.params['invest_count']
         invest_money = self.params['invest_money']
 
@@ -138,9 +143,7 @@ class MockInvestment:
         investRealCloses = data_params['investRealCloses']
         investX = data_params['investX']
 
-        learning = Learning(self.params)
-        learning_all = Learning(self.params, True, all_sess_name)
-        graph_params = learning.draw_graph()
+        graph_params = stacked_rnn.get_stacted_rnn_model()
         X = graph_params['X']
         Y_pred = graph_params['Y_pred']
         output_keep_prob = graph_params['output_keep_prob']
@@ -199,7 +202,7 @@ class MockInvestment:
             init_all = tf.global_variables_initializer()
             sess_all.run(init_all)
             saver_all.restore(sess_all, file_path_all)
-            last_predict_all = sess.run(Y_pred, feed_dict={X: dataX_last, output_keep_prob: 1.0})
+            last_predict_all = sess_all.run(Y_pred, feed_dict={X: dataX_last, output_keep_prob: 1.0})
 
         last_predict = np.mean([last_predict, last_predict_all])
 

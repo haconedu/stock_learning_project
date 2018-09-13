@@ -8,11 +8,11 @@ from trains.mock_investment import MockInvestment
 from data.data_utils import DataUtils
 
 
-def let_train_invest(corp_code, corp_name, params, params_all, no):
+def let_train_invest(corp_code, corp_name, params, no):
     stocks = Stocks()
     trains_data = TrainsData(params)
     learning = Learning(params)
-    learning_all = Learning(params_all, True, 'ALL_CORPS_2')
+    learning_all = Learning(params, True)
     invest = MockInvestment(params)
 
     stock_data = stocks.get_stock_data(corp_code)
@@ -20,7 +20,7 @@ def let_train_invest(corp_code, corp_name, params, params_all, no):
     rmse_val, train_cnt, rmse_vals, test_predict = learning.let_learning(corp_code, data_params)
     rmse_val_all, train_cnt_all, rmse_vals_all, test_predict_all = learning_all.let_learning(corp_code, data_params)
     last_money, last_predict, invest_predicts, all_invest_money = invest.let_invest_and_all(corp_code, train_cnt, dataX_last,
-                                                                                    data_params, 'ALL_CORPS_2')
+                                                                                    data_params)
     rmse_val = np.mean([rmse_val, rmse_val_all])
     train_cnt = train_cnt + train_cnt_all
 
@@ -28,7 +28,7 @@ def let_train_invest(corp_code, corp_name, params, params_all, no):
     return [no, corp_code, corp_name, rmse_val, last_money, all_invest_money, train_cnt]
 
 
-def let_train_invests(corps, params, params_all, start_no=1, reult_file_name='twins_result'):
+def let_train_invests(corps, params, start_no=1, reult_file_name='twins_result'):
     comp_rmses = []
     no = 1
     for index, corp_data in corps.iterrows():
@@ -37,7 +37,7 @@ def let_train_invests(corps, params, params_all, start_no=1, reult_file_name='tw
             continue
         corp_code = corp_data['종목코드']
         corp_name = corp_data['회사명']
-        result = let_train_invest(corp_code, corp_name, params, params_all, no)
+        result = let_train_invest(corp_code, corp_name, params, no)
         comp_rmses.append(result)
         if no % 10 == 0:
             df_comp_rmses = pd.DataFrame(comp_rmses,
@@ -58,7 +58,7 @@ def main(start_no=1, params=None, reult_file_name='twins_result'):
             'dropout_keep': 0.8,  # dropout
             'output_dim': 1,  # 출력 데이터 갯수
             'learning_rate': 0.0001,
-            'iterations': [24, 1000],  # 최소, 최대 훈련 반복횟수
+            'iterations': [24, 100],  # 최소, 최대 훈련 반복횟수
             'rmse_max': 0.05,
             'train_percent': 80.0,  # 훈련 데이터 퍼센트
             'loss_up_count': 12,  # early stopping
@@ -69,10 +69,7 @@ def main(start_no=1, params=None, reult_file_name='twins_result'):
             'invest_min_percent': 0.6,  # 투자를 하는 최소 간격 퍼센트
             'kor_font_path': 'C:\\WINDOWS\\Fonts\\H2GTRM.TTF'
         }
-
-    params_all = params.copy()
-    params_all['hidden_dims'] = [128, 128, 128, 128, 96, 96, 96, 64, 64]
-    let_train_invests(corps, params, params_all, start_no, reult_file_name)
+    let_train_invests(corps, params, start_no, reult_file_name)
 
 
 if __name__ == '__main__':

@@ -11,10 +11,11 @@ from models.stacked_rnn import StackedRnn
 class Learning:
     """학습을 시킨다"""
 
-    def __init__(self, params, is_all_corps_model=False, session_file_name='ALL_CORPS'):
+    def __init__(self, params, is_all_corps_model=False, session_file_name='ALL_CORPS', y_is_up_down=False):
         self.params = params
         self.all_corps_model = is_all_corps_model
         self.session_file_name = session_file_name
+        self.y_is_up_down = y_is_up_down  # 결과 값을 오르는지 내리는 지로 수정함
 
     def get_session_path(self, corp_code):
         """저장할 세션의 경로 및 파일명"""
@@ -94,7 +95,7 @@ class Learning:
             less_cnt = 0
             train_count = 0
             rmse_vals = []
-
+            max_test_predict = 0
             for i in range(iterations[1]):
                 if not restored or i != 0:
                     _, step_loss = sess.run([train, loss], feed_dict={X: trainX, Y: trainY, X_closes: trainCloses,
@@ -102,6 +103,7 @@ class Learning:
                 test_predict = sess.run(Y_pred, feed_dict={X: testX, output_keep_prob: 1.0})
                 rmse_val = sess.run(rmse, feed_dict={targets: testY, predictions: test_predict, X_closes: testCloses})
                 rmse_vals.append(rmse_val)
+                #print(testY, test_predict, rmse_val)
 
                 if i == 0 and restored:
                     max_test_predict, min_rmse_val, = test_predict, rmse_val
@@ -120,6 +122,6 @@ class Learning:
 
     def let_learning(self, comp_code, data_params):
         """그래프를 그리고 학습을 시킨다."""
-        stacked_rnn = StackedRnn(self.params)
+        stacked_rnn = StackedRnn(self.params,  self.y_is_up_down)
         graph_params = stacked_rnn.get_stacted_rnn_model()
         return self.let_training(graph_params, comp_code, data_params)
