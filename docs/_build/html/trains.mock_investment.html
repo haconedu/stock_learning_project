@@ -1,0 +1,148 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="kr">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>trains.mock_investment module &#8212; Stock Learning Project 1.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-trains.mock_investment">
+<span id="trains-mock-investment-module"></span><h1>trains.mock_investment module<a class="headerlink" href="#module-trains.mock_investment" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="trains.mock_investment.MockInvestment">
+<em class="property">class </em><code class="descclassname">trains.mock_investment.</code><code class="descname">MockInvestment</code><span class="sig-paren">(</span><em>params</em>, <em>is_all_corps_model=False</em>, <em>session_file_name='ALL_CORPS'</em>, <em>y_is_up_down=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/trains/mock_investment.html#MockInvestment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#trains.mock_investment.MockInvestment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>모의투자</p>
+<dl class="method">
+<dt id="trains.mock_investment.MockInvestment.buy_stock">
+<code class="descname">buy_stock</code><span class="sig-paren">(</span><em>now_money</em>, <em>now_close</em>, <em>now_stock_cnt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/trains/mock_investment.html#MockInvestment.buy_stock"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#trains.mock_investment.MockInvestment.buy_stock" title="Permalink to this definition">¶</a></dt>
+<dd><p>주식을 산다.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="trains.mock_investment.MockInvestment.get_real_money">
+<code class="descname">get_real_money</code><span class="sig-paren">(</span><em>data_params</em>, <em>scaler_close</em>, <em>last_predict</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/trains/mock_investment.html#MockInvestment.get_real_money"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#trains.mock_investment.MockInvestment.get_real_money" title="Permalink to this definition">¶</a></dt>
+<dd><p>실제 가격을 가져온다.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="trains.mock_investment.MockInvestment.let_invest">
+<code class="descname">let_invest</code><span class="sig-paren">(</span><em>comp_code</em>, <em>train_cnt</em>, <em>dataX_last</em>, <em>data_params</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/trains/mock_investment.html#MockInvestment.let_invest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#trains.mock_investment.MockInvestment.let_invest" title="Permalink to this definition">¶</a></dt>
+<dd><p>학습 후 모의 주식 거래를 한다.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="trains.mock_investment.MockInvestment.let_invest_and_all">
+<code class="descname">let_invest_and_all</code><span class="sig-paren">(</span><em>comp_code</em>, <em>train_cnt</em>, <em>dataX_last</em>, <em>data_params</em>, <em>all_sess_name='ALL_CORPS'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/trains/mock_investment.html#MockInvestment.let_invest_and_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#trains.mock_investment.MockInvestment.let_invest_and_all" title="Permalink to this definition">¶</a></dt>
+<dd><p>학습 후 모의 주식 거래를 한다.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="trains.mock_investment.MockInvestment.let_invest_money">
+<code class="descname">let_invest_money</code><span class="sig-paren">(</span><em>invest_predict</em>, <em>now_scaled_close</em>, <em>now_close</em>, <em>now_money</em>, <em>now_stock_cnt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/trains/mock_investment.html#MockInvestment.let_invest_money"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#trains.mock_investment.MockInvestment.let_invest_money" title="Permalink to this definition">¶</a></dt>
+<dd><p>예측 값에 따라 매수 매도를 실행한다.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="trains.mock_investment.MockInvestment.let_invest_money_up_down">
+<code class="descname">let_invest_money_up_down</code><span class="sig-paren">(</span><em>invest_predict</em>, <em>now_close</em>, <em>now_money</em>, <em>now_stock_cnt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/trains/mock_investment.html#MockInvestment.let_invest_money_up_down"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#trains.mock_investment.MockInvestment.let_invest_money_up_down" title="Permalink to this definition">¶</a></dt>
+<dd><p>예측 값에 따라 매수 매도를 실행한다.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="trains.mock_investment.MockInvestment.let_invest_money_value">
+<code class="descname">let_invest_money_value</code><span class="sig-paren">(</span><em>invest_predict</em>, <em>now_scaled_close</em>, <em>now_close</em>, <em>now_money</em>, <em>now_stock_cnt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/trains/mock_investment.html#MockInvestment.let_invest_money_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#trains.mock_investment.MockInvestment.let_invest_money_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>예측 값에 따라 매수 매도를 실행한다.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="trains.mock_investment.MockInvestment.sell_stock">
+<code class="descname">sell_stock</code><span class="sig-paren">(</span><em>now_money</em>, <em>now_close</em>, <em>now_stock_cnt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/trains/mock_investment.html#MockInvestment.sell_stock"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#trains.mock_investment.MockInvestment.sell_stock" title="Permalink to this definition">¶</a></dt>
+<dd><p>주식을 판다.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="trains.mock_investment.MockInvestment.to_money">
+<code class="descname">to_money</code><span class="sig-paren">(</span><em>now_stock_cnt</em>, <em>now_close</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/trains/mock_investment.html#MockInvestment.to_money"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#trains.mock_investment.MockInvestment.to_money" title="Permalink to this definition">¶</a></dt>
+<dd><p>주식매도를 해서 돈으로 바꾼다.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, southman.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/trains.mock_investment.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

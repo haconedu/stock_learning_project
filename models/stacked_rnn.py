@@ -27,13 +27,15 @@ class StackedRnn:
             cells.append(dropout_cell)
         stacked_rnn_cell = tf.nn.rnn_cell.MultiRNNCell(cells)
         outputs, _states = tf.nn.dynamic_rnn(stacked_rnn_cell, X, dtype=tf.float32)
-        Y_pred = tf.contrib.layers.fully_connected(
-            outputs[:, -1], self.params['output_dim'], activation_fn=None)  # We use the last cell's output
 
         # cost/loss
         if not self.y_is_up_down:
+            Y_pred = tf.contrib.layers.fully_connected(
+                outputs[:, -1], self.params['output_dim'], activation_fn=None)  # We use the last cell's output
             loss = tf.reduce_sum(tf.square((Y - Y_pred) / (1 + Y - X_closes)))
         else:
+            Y_pred = tf.contrib.layers.fully_connected(
+                outputs[:, -1], self.params['output_dim'], activation_fn=None) # We use the last cell's output
             loss = tf.reduce_sum(tf.square(Y - Y_pred))
 
         optimizer = tf.train.AdamOptimizer(self.params['learning_rate'])
@@ -45,7 +47,7 @@ class StackedRnn:
         if not self.y_is_up_down:
             rmse = tf.sqrt(tf.reduce_mean(tf.square((targets - predictions) / (1 + targets - X_closes))))
         else:
-            rmse = tf.sqrt(tf.reduce_mean(tf.square(targets - predictions)))
+            rmse = tf.reduce_mean(tf.square(targets- predictions))
 
         return {
             'X': X,

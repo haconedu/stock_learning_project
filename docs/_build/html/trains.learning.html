@@ -1,0 +1,122 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="kr">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>trains.learning module &#8212; Stock Learning Project 1.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-trains.learning">
+<span id="trains-learning-module"></span><h1>trains.learning module<a class="headerlink" href="#module-trains.learning" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="trains.learning.Learning">
+<em class="property">class </em><code class="descclassname">trains.learning.</code><code class="descname">Learning</code><span class="sig-paren">(</span><em>params</em>, <em>is_all_corps_model=False</em>, <em>session_file_name='ALL_CORPS'</em>, <em>y_is_up_down=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/trains/learning.html#Learning"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#trains.learning.Learning" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>학습을 시킨다</p>
+<dl class="method">
+<dt id="trains.learning.Learning.draw_plot">
+<code class="descname">draw_plot</code><span class="sig-paren">(</span><em>rmse_vals</em>, <em>test_predict</em>, <em>invest_predicts</em>, <em>comp_name</em>, <em>data_params</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/trains/learning.html#Learning.draw_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#trains.learning.Learning.draw_plot" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="trains.learning.Learning.get_session_path">
+<code class="descname">get_session_path</code><span class="sig-paren">(</span><em>corp_code</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/trains/learning.html#Learning.get_session_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#trains.learning.Learning.get_session_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>저장할 세션의 경로 및 파일명</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="trains.learning.Learning.let_learning">
+<code class="descname">let_learning</code><span class="sig-paren">(</span><em>comp_code</em>, <em>data_params</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/trains/learning.html#Learning.let_learning"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#trains.learning.Learning.let_learning" title="Permalink to this definition">¶</a></dt>
+<dd><p>그래프를 그리고 학습을 시킨다.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="trains.learning.Learning.let_training">
+<code class="descname">let_training</code><span class="sig-paren">(</span><em>graph_params</em>, <em>comp_code</em>, <em>data_params</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/trains/learning.html#Learning.let_training"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#trains.learning.Learning.let_training" title="Permalink to this definition">¶</a></dt>
+<dd><p>학습을 시킨다.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="trains.learning.Learning.save_learning_image">
+<code class="descname">save_learning_image</code><span class="sig-paren">(</span><em>sess</em>, <em>saver</em>, <em>comp_code</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/trains/learning.html#Learning.save_learning_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#trains.learning.Learning.save_learning_image" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, southman.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/trains.learning.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

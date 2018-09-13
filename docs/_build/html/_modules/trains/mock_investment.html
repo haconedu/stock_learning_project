@@ -1,0 +1,293 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="kr">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>trains.mock_investment &#8212; Stock Learning Project 1.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for trains.mock_investment</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">trains.learning</span> <span class="k">import</span> <span class="n">Learning</span>
+<span class="kn">from</span> <span class="nn">models.stacked_rnn</span> <span class="k">import</span> <span class="n">StackedRnn</span>
+
+
+<div class="viewcode-block" id="MockInvestment"><a class="viewcode-back" href="../../trains.mock_investment.html#trains.mock_investment.MockInvestment">[docs]</a><span class="k">class</span> <span class="nc">MockInvestment</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;모의투자&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">is_all_corps_model</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">session_file_name</span><span class="o">=</span><span class="s1">&#39;ALL_CORPS&#39;</span><span class="p">,</span> <span class="n">y_is_up_down</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="n">params</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">all_corps_model</span> <span class="o">=</span> <span class="n">is_all_corps_model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session_file_name</span> <span class="o">=</span> <span class="n">session_file_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y_is_up_down</span> <span class="o">=</span> <span class="n">y_is_up_down</span>  <span class="c1"># 결과 값을 오르는지 내리는 지로 수정함</span>
+
+<div class="viewcode-block" id="MockInvestment.let_invest_money"><a class="viewcode-back" href="../../trains.mock_investment.html#trains.mock_investment.MockInvestment.let_invest_money">[docs]</a>    <span class="k">def</span> <span class="nf">let_invest_money</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">invest_predict</span><span class="p">,</span> <span class="n">now_scaled_close</span><span class="p">,</span> <span class="n">now_close</span><span class="p">,</span> <span class="n">now_money</span><span class="p">,</span> <span class="n">now_stock_cnt</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;예측 값에 따라 매수 매도를 실행한다.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_is_up_down</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">let_invest_money_value</span><span class="p">(</span><span class="n">invest_predict</span><span class="p">,</span> <span class="n">now_scaled_close</span><span class="p">,</span> <span class="n">now_close</span><span class="p">,</span> <span class="n">now_money</span><span class="p">,</span> <span class="n">now_stock_cnt</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">let_invest_money_up_down</span><span class="p">(</span><span class="n">invest_predict</span><span class="p">,</span> <span class="n">now_close</span><span class="p">,</span> <span class="n">now_money</span><span class="p">,</span> <span class="n">now_stock_cnt</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MockInvestment.let_invest_money_value"><a class="viewcode-back" href="../../trains.mock_investment.html#trains.mock_investment.MockInvestment.let_invest_money_value">[docs]</a>    <span class="k">def</span> <span class="nf">let_invest_money_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">invest_predict</span><span class="p">,</span> <span class="n">now_scaled_close</span><span class="p">,</span> <span class="n">now_close</span><span class="p">,</span> <span class="n">now_money</span><span class="p">,</span> <span class="n">now_stock_cnt</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;예측 값에 따라 매수 매도를 실행한다.&quot;&quot;&quot;</span>
+        <span class="n">invest_min_percent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;invest_min_percent&#39;</span><span class="p">]</span>
+
+        <span class="n">ratio</span> <span class="o">=</span> <span class="p">(</span><span class="n">invest_predict</span> <span class="o">-</span> <span class="n">now_scaled_close</span><span class="p">)</span> <span class="o">/</span> <span class="n">now_scaled_close</span> <span class="o">*</span> <span class="mi">100</span>
+
+        <span class="k">if</span> <span class="n">ratio</span> <span class="o">&gt;</span> <span class="n">invest_min_percent</span><span class="p">:</span>
+            <span class="n">now_money</span><span class="p">,</span> <span class="n">now_stock_cnt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">buy_stock</span><span class="p">(</span><span class="n">now_money</span><span class="p">,</span> <span class="n">now_close</span><span class="p">,</span> <span class="n">now_stock_cnt</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">ratio</span> <span class="o">&lt;</span> <span class="o">-</span><span class="n">invest_min_percent</span><span class="p">:</span>
+            <span class="n">now_money</span><span class="p">,</span> <span class="n">now_stock_cnt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sell_stock</span><span class="p">(</span><span class="n">now_money</span><span class="p">,</span> <span class="n">now_close</span><span class="p">,</span> <span class="n">now_stock_cnt</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">now_money</span><span class="p">,</span> <span class="n">now_stock_cnt</span></div>
+
+<div class="viewcode-block" id="MockInvestment.let_invest_money_up_down"><a class="viewcode-back" href="../../trains.mock_investment.html#trains.mock_investment.MockInvestment.let_invest_money_up_down">[docs]</a>    <span class="k">def</span> <span class="nf">let_invest_money_up_down</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">invest_predict</span><span class="p">,</span> <span class="n">now_close</span><span class="p">,</span> <span class="n">now_money</span><span class="p">,</span> <span class="n">now_stock_cnt</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;예측 값에 따라 매수 매도를 실행한다.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">invest_predict</span> <span class="o">&gt;</span> <span class="mf">0.51</span><span class="p">:</span>
+            <span class="n">now_money</span><span class="p">,</span> <span class="n">now_stock_cnt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">buy_stock</span><span class="p">(</span><span class="n">now_money</span><span class="p">,</span> <span class="n">now_close</span><span class="p">,</span> <span class="n">now_stock_cnt</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">invest_predict</span> <span class="o">&lt;</span> <span class="mf">0.49</span> <span class="p">:</span>
+            <span class="n">now_money</span><span class="p">,</span> <span class="n">now_stock_cnt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sell_stock</span><span class="p">(</span><span class="n">now_money</span><span class="p">,</span> <span class="n">now_close</span><span class="p">,</span> <span class="n">now_stock_cnt</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">now_money</span><span class="p">,</span> <span class="n">now_stock_cnt</span></div>
+
+<div class="viewcode-block" id="MockInvestment.buy_stock"><a class="viewcode-back" href="../../trains.mock_investment.html#trains.mock_investment.MockInvestment.buy_stock">[docs]</a>    <span class="k">def</span> <span class="nf">buy_stock</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">now_money</span><span class="p">,</span> <span class="n">now_close</span><span class="p">,</span> <span class="n">now_stock_cnt</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;주식을 산다.&quot;&quot;&quot;</span>
+        <span class="n">fee_percent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;fee_percent&#39;</span><span class="p">]</span>
+        <span class="n">cnt</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">now_money</span> <span class="o">/</span> <span class="n">now_close</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">cnt</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">fee</span> <span class="o">=</span> <span class="n">now_close</span> <span class="o">*</span> <span class="n">fee_percent</span> <span class="o">/</span> <span class="mi">100</span>
+            <span class="n">now_money</span> <span class="o">-=</span> <span class="p">(</span><span class="n">now_close</span> <span class="o">+</span> <span class="n">fee</span><span class="p">)</span> <span class="o">*</span> <span class="n">cnt</span>
+            <span class="n">now_stock_cnt</span> <span class="o">+=</span> <span class="n">cnt</span>
+        <span class="k">return</span> <span class="n">now_money</span><span class="p">,</span> <span class="n">now_stock_cnt</span></div>
+    
+<div class="viewcode-block" id="MockInvestment.sell_stock"><a class="viewcode-back" href="../../trains.mock_investment.html#trains.mock_investment.MockInvestment.sell_stock">[docs]</a>    <span class="k">def</span> <span class="nf">sell_stock</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">now_money</span><span class="p">,</span> <span class="n">now_close</span><span class="p">,</span> <span class="n">now_stock_cnt</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;주식을 판다.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">now_stock_cnt</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">now_money</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_money</span><span class="p">(</span><span class="n">now_close</span><span class="p">,</span> <span class="n">now_stock_cnt</span><span class="p">)</span>
+            <span class="n">now_stock_cnt</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">return</span> <span class="n">now_money</span><span class="p">,</span> <span class="n">now_stock_cnt</span></div>
+
+<div class="viewcode-block" id="MockInvestment.to_money"><a class="viewcode-back" href="../../trains.mock_investment.html#trains.mock_investment.MockInvestment.to_money">[docs]</a>    <span class="k">def</span> <span class="nf">to_money</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">now_stock_cnt</span><span class="p">,</span> <span class="n">now_close</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;주식매도를 해서 돈으로 바꾼다.&quot;&quot;&quot;</span>
+        <span class="n">money</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="n">now_stock_cnt</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">fee_percent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;fee_percent&#39;</span><span class="p">]</span>
+            <span class="n">tax_percent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;tax_percent&#39;</span><span class="p">]</span>
+
+            <span class="n">fee</span> <span class="o">=</span> <span class="n">now_close</span> <span class="o">*</span> <span class="n">fee_percent</span> <span class="o">/</span> <span class="mi">100</span>
+            <span class="n">tax</span> <span class="o">=</span> <span class="n">now_close</span> <span class="o">*</span> <span class="n">tax_percent</span> <span class="o">/</span> <span class="mi">100</span>
+            <span class="n">money</span> <span class="o">=</span> <span class="p">(</span><span class="n">now_close</span> <span class="o">-</span> <span class="p">(</span><span class="n">fee</span> <span class="o">+</span> <span class="n">tax</span><span class="p">))</span> <span class="o">*</span> <span class="n">now_stock_cnt</span>
+        <span class="k">return</span> <span class="n">money</span></div>
+
+<div class="viewcode-block" id="MockInvestment.get_real_money"><a class="viewcode-back" href="../../trains.mock_investment.html#trains.mock_investment.MockInvestment.get_real_money">[docs]</a>    <span class="k">def</span> <span class="nf">get_real_money</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_params</span><span class="p">,</span> <span class="n">scaler_close</span><span class="p">,</span> <span class="n">last_predict</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;실제 가격을 가져온다.&quot;&quot;&quot;</span>
+        <span class="n">investRealCloses</span> <span class="o">=</span> <span class="n">data_params</span><span class="p">[</span><span class="s1">&#39;investRealCloses&#39;</span><span class="p">]</span>
+        <span class="n">predict_money</span> <span class="o">=</span> <span class="n">scaler_close</span><span class="o">.</span><span class="n">inverse_transform</span><span class="p">(</span><span class="n">last_predict</span><span class="p">)</span>
+        <span class="n">last_close_money</span> <span class="o">=</span> <span class="n">investRealCloses</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">investRealCloses</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">last_pred_money</span> <span class="o">=</span> <span class="n">predict_money</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">last_close_money</span><span class="p">,</span> <span class="n">last_pred_money</span></div>
+
+<div class="viewcode-block" id="MockInvestment.let_invest"><a class="viewcode-back" href="../../trains.mock_investment.html#trains.mock_investment.MockInvestment.let_invest">[docs]</a>    <span class="k">def</span> <span class="nf">let_invest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">comp_code</span><span class="p">,</span> <span class="n">train_cnt</span><span class="p">,</span> <span class="n">dataX_last</span><span class="p">,</span> <span class="n">data_params</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;학습 후 모의 주식 거래를 한다.&quot;&quot;&quot;</span>
+        <span class="n">stacked_rnn</span> <span class="o">=</span> <span class="n">StackedRnn</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
+        <span class="n">learning</span> <span class="o">=</span> <span class="n">Learning</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_corps_model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_file_name</span><span class="p">)</span>
+
+        <span class="n">invest_count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;invest_count&#39;</span><span class="p">]</span>
+        <span class="n">invest_money</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;invest_money&#39;</span><span class="p">]</span>
+
+        <span class="n">investCloses</span> <span class="o">=</span> <span class="n">data_params</span><span class="p">[</span><span class="s1">&#39;investCloses&#39;</span><span class="p">]</span>
+        <span class="n">investRealCloses</span> <span class="o">=</span> <span class="n">data_params</span><span class="p">[</span><span class="s1">&#39;investRealCloses&#39;</span><span class="p">]</span>
+        <span class="n">investX</span> <span class="o">=</span> <span class="n">data_params</span><span class="p">[</span><span class="s1">&#39;investX&#39;</span><span class="p">]</span>
+
+        <span class="n">graph_params</span> <span class="o">=</span> <span class="n">stacked_rnn</span><span class="o">.</span><span class="n">get_stacted_rnn_model</span><span class="p">()</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">graph_params</span><span class="p">[</span><span class="s1">&#39;X&#39;</span><span class="p">]</span>
+        <span class="n">Y_pred</span> <span class="o">=</span> <span class="n">graph_params</span><span class="p">[</span><span class="s1">&#39;Y_pred&#39;</span><span class="p">]</span>
+        <span class="n">output_keep_prob</span> <span class="o">=</span> <span class="n">graph_params</span><span class="p">[</span><span class="s1">&#39;output_keep_prob&#39;</span><span class="p">]</span>
+
+        <span class="n">session_file_path</span> <span class="o">=</span> <span class="n">learning</span><span class="o">.</span><span class="n">get_session_path</span><span class="p">(</span><span class="n">comp_code</span><span class="p">)</span>
+
+        <span class="n">now_stock_cnt</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">saver</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">Saver</span><span class="p">()</span>
+        <span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span> <span class="k">as</span> <span class="n">sess</span><span class="p">:</span>
+            <span class="n">init</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">global_variables_initializer</span><span class="p">()</span>
+            <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">init</span><span class="p">)</span>
+            <span class="n">saver</span><span class="o">.</span><span class="n">restore</span><span class="p">(</span><span class="n">sess</span><span class="p">,</span> <span class="n">session_file_path</span><span class="p">)</span>
+
+            <span class="n">all_invest_money</span> <span class="o">=</span> <span class="n">invest_money</span>
+            <span class="n">all_stock_count</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">predicts</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">now_close</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">invest_count</span><span class="p">):</span>
+                <span class="n">invest_predicts</span> <span class="o">=</span> <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">Y_pred</span><span class="p">,</span> <span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="n">X</span><span class="p">:</span> <span class="n">investX</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span> <span class="n">output_keep_prob</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">})</span>
+                <span class="n">predicts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">invest_predicts</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+                <span class="n">invest_predict</span> <span class="o">=</span> <span class="n">invest_predicts</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">now_scaled_close</span> <span class="o">=</span> <span class="n">investCloses</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">now_close</span> <span class="o">=</span> <span class="n">investRealCloses</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">invest_predict</span><span class="p">,</span> <span class="n">now_scaled_close</span><span class="p">,</span> <span class="n">now_close</span><span class="p">)</span>
+                <span class="n">invest_money</span><span class="p">,</span> <span class="n">now_stock_cnt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">let_invest_money</span><span class="p">(</span><span class="n">invest_predict</span><span class="p">,</span> <span class="n">now_scaled_close</span><span class="p">,</span> <span class="n">now_close</span><span class="p">,</span>
+                                                                    <span class="n">invest_money</span><span class="p">,</span> <span class="n">now_stock_cnt</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">all_invest_money</span><span class="p">,</span> <span class="n">all_stock_count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">let_invest_money</span><span class="p">(</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">now_scaled_close</span><span class="p">,</span> <span class="n">now_close</span><span class="p">,</span>
+                                                                              <span class="n">all_invest_money</span><span class="p">,</span> <span class="n">all_stock_count</span><span class="p">)</span>
+            <span class="n">invest_money</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_money</span><span class="p">(</span><span class="n">now_stock_cnt</span><span class="p">,</span> <span class="n">now_close</span><span class="p">)</span>
+            <span class="n">all_invest_money</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_money</span><span class="p">(</span><span class="n">all_stock_count</span><span class="p">,</span> <span class="n">now_close</span><span class="p">)</span>
+
+            <span class="n">last_predict</span> <span class="o">=</span> <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">Y_pred</span><span class="p">,</span> <span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="n">X</span><span class="p">:</span> <span class="n">dataX_last</span><span class="p">,</span> <span class="n">output_keep_prob</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">})</span>
+        <span class="c1"># print(now_money)</span>
+        <span class="k">return</span> <span class="n">invest_money</span><span class="p">,</span> <span class="n">last_predict</span><span class="p">,</span> <span class="n">predicts</span><span class="p">,</span> <span class="n">all_invest_money</span></div>
+
+<div class="viewcode-block" id="MockInvestment.let_invest_and_all"><a class="viewcode-back" href="../../trains.mock_investment.html#trains.mock_investment.MockInvestment.let_invest_and_all">[docs]</a>    <span class="k">def</span> <span class="nf">let_invest_and_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">comp_code</span><span class="p">,</span> <span class="n">train_cnt</span><span class="p">,</span> <span class="n">dataX_last</span><span class="p">,</span> <span class="n">data_params</span><span class="p">,</span> <span class="n">all_sess_name</span><span class="o">=</span><span class="s1">&#39;ALL_CORPS&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;학습 후 모의 주식 거래를 한다.&quot;&quot;&quot;</span>
+
+        <span class="n">stacked_rnn</span> <span class="o">=</span> <span class="n">StackedRnn</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
+        <span class="n">learning</span> <span class="o">=</span> <span class="n">Learning</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
+        <span class="n">learning_all</span> <span class="o">=</span> <span class="n">Learning</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">all_sess_name</span><span class="p">)</span>
+
+        <span class="n">invest_count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;invest_count&#39;</span><span class="p">]</span>
+        <span class="n">invest_money</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;invest_money&#39;</span><span class="p">]</span>
+
+        <span class="c1"># investX = data_params[&#39;investX&#39;]</span>
+        <span class="n">investCloses</span> <span class="o">=</span> <span class="n">data_params</span><span class="p">[</span><span class="s1">&#39;investCloses&#39;</span><span class="p">]</span>
+        <span class="n">investRealCloses</span> <span class="o">=</span> <span class="n">data_params</span><span class="p">[</span><span class="s1">&#39;investRealCloses&#39;</span><span class="p">]</span>
+        <span class="n">investX</span> <span class="o">=</span> <span class="n">data_params</span><span class="p">[</span><span class="s1">&#39;investX&#39;</span><span class="p">]</span>
+
+        <span class="n">graph_params</span> <span class="o">=</span> <span class="n">stacked_rnn</span><span class="o">.</span><span class="n">get_stacted_rnn_model</span><span class="p">()</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">graph_params</span><span class="p">[</span><span class="s1">&#39;X&#39;</span><span class="p">]</span>
+        <span class="n">Y_pred</span> <span class="o">=</span> <span class="n">graph_params</span><span class="p">[</span><span class="s1">&#39;Y_pred&#39;</span><span class="p">]</span>
+        <span class="n">output_keep_prob</span> <span class="o">=</span> <span class="n">graph_params</span><span class="p">[</span><span class="s1">&#39;output_keep_prob&#39;</span><span class="p">]</span>
+
+        <span class="n">now_stock_cnt</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="n">file_path</span> <span class="o">=</span> <span class="n">learning</span><span class="o">.</span><span class="n">get_session_path</span><span class="p">(</span><span class="n">comp_code</span><span class="p">)</span>
+        <span class="n">file_path_all</span> <span class="o">=</span> <span class="n">learning_all</span><span class="o">.</span><span class="n">get_session_path</span><span class="p">(</span><span class="n">comp_code</span><span class="p">)</span>
+
+        <span class="n">all_invest_money</span> <span class="o">=</span> <span class="n">invest_money</span>
+        <span class="n">all_stock_count</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">now_close</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">predicts</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">invest_count</span><span class="p">):</span>
+
+            <span class="n">saver</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">Saver</span><span class="p">()</span>
+            <span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span> <span class="k">as</span> <span class="n">sess</span><span class="p">:</span>
+                <span class="n">init</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">global_variables_initializer</span><span class="p">()</span>
+                <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">init</span><span class="p">)</span>
+                <span class="n">saver</span><span class="o">.</span><span class="n">restore</span><span class="p">(</span><span class="n">sess</span><span class="p">,</span> <span class="n">file_path</span><span class="p">)</span>
+                <span class="n">invest_predicts</span> <span class="o">=</span> <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">Y_pred</span><span class="p">,</span> <span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="n">X</span><span class="p">:</span> <span class="n">investX</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span> <span class="n">output_keep_prob</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">})</span>
+                <span class="n">invest_predict</span> <span class="o">=</span> <span class="n">invest_predicts</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+            <span class="n">saver_all</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">Saver</span><span class="p">()</span>
+            <span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span> <span class="k">as</span> <span class="n">sess_all</span><span class="p">:</span>
+                <span class="n">init_all</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">global_variables_initializer</span><span class="p">()</span>
+                <span class="n">sess_all</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">init_all</span><span class="p">)</span>
+                <span class="n">saver_all</span><span class="o">.</span><span class="n">restore</span><span class="p">(</span><span class="n">sess_all</span><span class="p">,</span> <span class="n">file_path_all</span><span class="p">)</span>
+                <span class="n">invest_predicts_all</span> <span class="o">=</span> <span class="n">sess_all</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">Y_pred</span><span class="p">,</span> <span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="n">X</span><span class="p">:</span> <span class="n">investX</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span> <span class="n">output_keep_prob</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">})</span>
+                <span class="n">invest_predict_all</span> <span class="o">=</span> <span class="n">invest_predicts_all</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+            <span class="n">invest_predict</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">([</span><span class="n">invest_predict</span><span class="p">,</span> <span class="n">invest_predict_all</span><span class="p">])</span>
+            <span class="n">predicts</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">invest_predict</span><span class="p">])</span>
+            <span class="n">now_scaled_close</span> <span class="o">=</span> <span class="n">investCloses</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">now_close</span> <span class="o">=</span> <span class="n">investRealCloses</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="c1"># print(invest_predict, now_scaled_close, now_close)</span>
+            <span class="n">invest_money</span><span class="p">,</span> <span class="n">now_stock_cnt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">let_invest_money</span><span class="p">(</span><span class="n">invest_predict</span><span class="p">,</span> <span class="n">now_scaled_close</span><span class="p">,</span> <span class="n">now_close</span><span class="p">,</span>
+                                                                <span class="n">invest_money</span><span class="p">,</span> <span class="n">now_stock_cnt</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">all_invest_money</span><span class="p">,</span> <span class="n">all_stock_count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">let_invest_money</span><span class="p">(</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">now_scaled_close</span><span class="p">,</span> <span class="n">now_close</span><span class="p">,</span>
+                                                                          <span class="n">all_invest_money</span><span class="p">,</span> <span class="n">all_stock_count</span><span class="p">)</span>
+
+        <span class="n">invest_money</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_money</span><span class="p">(</span><span class="n">now_stock_cnt</span><span class="p">,</span> <span class="n">now_close</span><span class="p">)</span>
+        <span class="n">all_invest_money</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_money</span><span class="p">(</span><span class="n">all_stock_count</span><span class="p">,</span> <span class="n">now_close</span><span class="p">)</span>
+
+        <span class="c1"># 마지막 예측 값을 구한다.</span>
+        <span class="n">saver</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">Saver</span><span class="p">()</span>
+        <span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span> <span class="k">as</span> <span class="n">sess</span><span class="p">:</span>
+            <span class="n">init</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">global_variables_initializer</span><span class="p">()</span>
+            <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">init</span><span class="p">)</span>
+            <span class="n">saver</span><span class="o">.</span><span class="n">restore</span><span class="p">(</span><span class="n">sess</span><span class="p">,</span> <span class="n">file_path</span><span class="p">)</span>
+            <span class="n">last_predict</span> <span class="o">=</span> <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">Y_pred</span><span class="p">,</span> <span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="n">X</span><span class="p">:</span> <span class="n">dataX_last</span><span class="p">,</span> <span class="n">output_keep_prob</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">})</span>
+
+        <span class="n">saver_all</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">Saver</span><span class="p">()</span>
+        <span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span> <span class="k">as</span> <span class="n">sess_all</span><span class="p">:</span>
+            <span class="n">init_all</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">global_variables_initializer</span><span class="p">()</span>
+            <span class="n">sess_all</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">init_all</span><span class="p">)</span>
+            <span class="n">saver_all</span><span class="o">.</span><span class="n">restore</span><span class="p">(</span><span class="n">sess_all</span><span class="p">,</span> <span class="n">file_path_all</span><span class="p">)</span>
+            <span class="n">last_predict_all</span> <span class="o">=</span> <span class="n">sess_all</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">Y_pred</span><span class="p">,</span> <span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="n">X</span><span class="p">:</span> <span class="n">dataX_last</span><span class="p">,</span> <span class="n">output_keep_prob</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">})</span>
+
+        <span class="n">last_predict</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">([</span><span class="n">last_predict</span><span class="p">,</span> <span class="n">last_predict_all</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">invest_money</span><span class="p">,</span> <span class="n">last_predict</span><span class="p">,</span> <span class="n">predicts</span><span class="p">,</span> <span class="n">all_invest_money</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, southman.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

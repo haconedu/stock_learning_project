@@ -1,0 +1,130 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="kr">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>data.trains_data module &#8212; Stock Learning Project 1.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-data.trains_data">
+<span id="data-trains-data-module"></span><h1>data.trains_data module<a class="headerlink" href="#module-data.trains_data" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="data.trains_data.TrainsData">
+<em class="property">class </em><code class="descclassname">data.trains_data.</code><code class="descname">TrainsData</code><span class="sig-paren">(</span><em>params</em>, <em>y_is_up_down=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data/trains_data.html#TrainsData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data.trains_data.TrainsData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>학습을 위한 데이터를 만든다.</p>
+<dl class="method">
+<dt id="data.trains_data.TrainsData.get_dataXY">
+<code class="descname">get_dataXY</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data/trains_data.html#TrainsData.get_dataXY"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data.trains_data.TrainsData.get_dataXY" title="Permalink to this definition">¶</a></dt>
+<dd><p>RNN을 위한 데이터로 만든다.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.trains_data.TrainsData.get_scaled_cols">
+<code class="descname">get_scaled_cols</code><span class="sig-paren">(</span><em>data</em>, <em>column_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data/trains_data.html#TrainsData.get_scaled_cols"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data.trains_data.TrainsData.get_scaled_cols" title="Permalink to this definition">¶</a></dt>
+<dd><p>컬럼을 스케일링을 시킨다.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.trains_data.TrainsData.get_scaled_data">
+<code class="descname">get_scaled_data</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data/trains_data.html#TrainsData.get_scaled_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data.trains_data.TrainsData.get_scaled_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>데이터를 스케일링 시킨다.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.trains_data.TrainsData.get_train_test">
+<code class="descname">get_train_test</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data/trains_data.html#TrainsData.get_train_test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data.trains_data.TrainsData.get_train_test" title="Permalink to this definition">¶</a></dt>
+<dd><p>train, test 데이터로 만든다.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.trains_data.TrainsData.split_train_test">
+<code class="descname">split_train_test</code><span class="sig-paren">(</span><em>dataX</em>, <em>dataY</em>, <em>data</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data/trains_data.html#TrainsData.split_train_test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data.trains_data.TrainsData.split_train_test" title="Permalink to this definition">¶</a></dt>
+<dd><p>train 및 test 데이터로 나눈다.</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="data.trains_data.TrainsData.to_ndarray">
+<em class="property">static </em><code class="descname">to_ndarray</code><span class="sig-paren">(</span><em>cols_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data/trains_data.html#TrainsData.to_ndarray"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data.trains_data.TrainsData.to_ndarray" title="Permalink to this definition">¶</a></dt>
+<dd><p>matrix 데이터로 변경한다.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, southman.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/data.trains_data.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -35,9 +35,9 @@ class MockInvestment:
 
     def let_invest_money_up_down(self, invest_predict, now_close, now_money, now_stock_cnt):
         """예측 값에 따라 매수 매도를 실행한다."""
-        if invest_predict == 1:
+        if invest_predict > 0.51:
             now_money, now_stock_cnt = self.buy_stock(now_money, now_close, now_stock_cnt)
-        else:
+        elif invest_predict < 0.49 :
             now_money, now_stock_cnt = self.sell_stock(now_money, now_close, now_stock_cnt)
         return now_money, now_stock_cnt
 
@@ -115,7 +115,7 @@ class MockInvestment:
                 invest_predict = invest_predicts[0][0]
                 now_scaled_close = investCloses[i][0]
                 now_close = investRealCloses[i]
-                print(invest_predict, now_scaled_close, now_close)
+                #print(invest_predict, now_scaled_close, now_close)
                 invest_money, now_stock_cnt = self.let_invest_money(invest_predict, now_scaled_close, now_close,
                                                                     invest_money, now_stock_cnt)
                 if i == 0:

@@ -102,7 +102,10 @@ def train_up_down_to_one_session(start_no=1, params=None, session_file_name='ALL
     corps = get_corps()
 
     if params is None:
-        params = get_basic_params()
+        params = get_basic_params().copy()
+        params['iterations'] = [100, 10000]
+        params['loss_up_count'] = 100
+        params['hidden_dims'] = [512, 256, 128, 64, 32]
     let_train_invests(corps, params, start_no, session_file_name, result_file_name, True)
 
 
