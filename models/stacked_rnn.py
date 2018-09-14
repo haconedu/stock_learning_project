@@ -4,15 +4,14 @@ import tensorflow as tf
 class StackedRnn:
     """학습 모델을 정의한다."""
 
-    def __init__(self, params, y_is_up_down=False):
+    def __init__(self, params):
         self.params = params
-        self.y_is_up_down = y_is_up_down  # 결과 값을 오르는지 내리는 지로 수정함
 
     def get_stacted_rnn_model(self):
         """Stacted RNN Model을 그린다."""
-        seq_length = self.params['seq_length']
-        data_dim = self.params['data_dim']
-        hidden_dims = self.params['hidden_dims']
+        seq_length = self.params.seq_length
+        data_dim = self.params.data_dim
+        hidden_dims = self.params.hidden_dims
 
         tf.reset_default_graph()
         X = tf.placeholder(tf.float32, [None, seq_length, data_dim])
@@ -29,22 +28,22 @@ class StackedRnn:
         outputs, _states = tf.nn.dynamic_rnn(stacked_rnn_cell, X, dtype=tf.float32)
 
         # cost/loss
-        if not self.y_is_up_down:
+        if not self.params.y_is_up_down:
             Y_pred = tf.contrib.layers.fully_connected(
-                outputs[:, -1], self.params['output_dim'], activation_fn=None)  # We use the last cell's output
+                outputs[:, -1], self.params.output_dim, activation_fn=None)  # We use the last cell's output
             loss = tf.reduce_sum(tf.square((Y - Y_pred) / (1 + Y - X_closes)))
         else:
             Y_pred = tf.contrib.layers.fully_connected(
-                outputs[:, -1], self.params['output_dim'], activation_fn=None) # We use the last cell's output
+                outputs[:, -1], self.params.output_dim, activation_fn=None) # We use the last cell's output
             loss = tf.reduce_sum(tf.square(Y - Y_pred))
 
-        optimizer = tf.train.AdamOptimizer(self.params['learning_rate'])
+        optimizer = tf.train.AdamOptimizer(self.params.learning_rate)
         train = optimizer.minimize(loss)
 
         # RMSE
         targets = tf.placeholder(tf.float32, [None, 1])
         predictions = tf.placeholder(tf.float32, [None, 1])
-        if not self.y_is_up_down:
+        if not self.params.y_is_up_down:
             rmse = tf.sqrt(tf.reduce_mean(tf.square((targets - predictions) / (1 + targets - X_closes))))
         else:
             rmse = tf.reduce_mean(tf.square(targets- predictions))

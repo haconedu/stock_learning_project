@@ -6,9 +6,8 @@ import numpy as np
 class TrainsData:
     """학습을 위한 데이터를 만든다."""
 
-    def __init__(self, params, y_is_up_down=False):
+    def __init__(self, params):
         self.params = params
-        self.y_is_up_down = y_is_up_down  # 결과 값을 오르는지 내리는 지로 수정함
 
     @staticmethod
     def to_ndarray(cols_data):
@@ -43,10 +42,10 @@ class TrainsData:
 
         dataX = []
         dataY = []
-        seq_length = self.params['seq_length']
+        seq_length = self.params.seq_length
         y_len = len(y)
 
-        if not self.y_is_up_down:
+        if not self.params.y_is_up_down:
             for i in range(0, y_len - seq_length):
                 _x = x[i:i + seq_length]
                 _y = y[i + seq_length]  # Next close price
@@ -64,12 +63,13 @@ class TrainsData:
         dataX_last = [x[y_len - seq_length: y_len]]
         return dataX, dataY, y, dataX_last
 
-    def split_train_test(self, dataX, dataY, data, y):
+    def split_train_test(self, dataX, dataY, data, y, invest_count=None):
         """train 및 test 데이터로 나눈다."""
-        invest_count = self.params['invest_count']
-        seq_length = self.params['seq_length']
+        if invest_count is None:
+            invest_count = self.params.invest_count
+        seq_length = self.params.seq_length
         data_count = len(dataY)
-        train_size = int(data_count * self.params['train_percent'] / 100)
+        train_size = int(data_count * self.params.train_percent / 100)
         train_last = data_count - invest_count
 
         trainX = np.array(dataX[0:train_size])
@@ -91,10 +91,10 @@ class TrainsData:
             'investX': investX, 'investY': investY, 'investCloses': investCloses, 'investRealCloses': investRealCloses
         }
 
-    def get_train_test(self, data):
+    def get_train_test(self, data, invest_count=None):
         """train, test 데이터로 만든다."""
         scaled_data, scaler_close = self.get_scaled_data(data)
         dataX, dataY, y, dataX_last = self.get_dataXY(scaled_data)
-        data_params = self.split_train_test(dataX, dataY, data, y)
+        data_params = self.split_train_test(dataX, dataY, data, y, invest_count)
         return data_params, scaler_close, dataX_last
 

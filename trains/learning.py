@@ -1,6 +1,7 @@
 import numpy as np
 import tensorflow as tf
 import os
+import shutil
 import matplotlib.pyplot as plt
 import matplotlib.font_manager as fm
 import matplotlib as mpl
@@ -11,28 +12,55 @@ from models.stacked_rnn import StackedRnn
 class Learning:
     """학습을 시킨다"""
 
-    def __init__(self, params, is_all_corps_model=False, session_file_name='ALL_CORPS', y_is_up_down=False):
+    SESSIONS_DIR = './data/files/sessions/'  # 세션파일의 디렉토리 경로
+
+    def __init__(self, params):
         self.params = params
-        self.all_corps_model = is_all_corps_model
-        self.session_file_name = session_file_name
-        self.y_is_up_down = y_is_up_down  # 결과 값을 오르는지 내리는 지로 수정함
+
+    def get_session_filename(self, corp_code):
+        """저장할 세션의 파일명"""
+        if self.params.is_all_corps_model:
+            file_name = self.params.session_file_name
+        else:
+            file_name = DataUtils.to_string_corp_code(corp_code)
+        return file_name
 
     def get_session_path(self, corp_code):
         """저장할 세션의 경로 및 파일명"""
-        if self.all_corps_model:
-            file_name = self.session_file_name
-        else:
-            file_name = DataUtils.to_string_corp_code(corp_code)
-        return "./data/files/sessions/" + file_name + ".ckpt"
+        file_name = self.get_session_filename(corp_code)
+        return self.get_session_dir(corp_code) + '/' + file_name + ".ckpt"
+
+    def get_session_dir(self, corp_code):
+        """저장할 세션의 디렉토리"""
+        file_name = self.get_session_filename(corp_code)
+        return self.SESSIONS_DIR + file_name
+
+    def save_learning_image(self, sess, saver, comp_code):
+        """학습데이터를 저장한다."""
+        file_path = self.get_session_path(comp_code)
+        saver.save(sess, file_path)
+
+    def exist_learning_image(self, comp_code):
+        """학습데이터가 존재하는지 여부 """
+        session_path = self.get_session_path(comp_code)
+        return os.path.isfile(session_path + '.index')
+
+    def delete_learning_image(self, comp_code=''):
+        """학습데이터를 삭제한다. """
+        session_dir = self.get_session_dir(comp_code)
+        if os.path.isdir(session_dir):
+            shutil.rmtree(session_dir)
+
 
     def draw_plot(self, rmse_vals, test_predict, invest_predicts, comp_name, data_params):
+        """그래프를 그린다."""
         testY = data_params['testY']
         investY = data_params['investY']
         y = np.append(testY, investY)
         predict = np.append(test_predict, invest_predicts)
 
         mpl.rcParams['axes.unicode_minus'] = False
-        font_name = fm.FontProperties(fname=self.params['kor_font_path'], size=50).get_name()
+        font_name = fm.FontProperties(fname=self.params.kor_font_path, size=50).get_name()
         plt.rc('font', family=font_name)
 
         plt.figure(1)
@@ -49,9 +77,6 @@ class Learning:
         plt.title(comp_name)
         plt.show()
 
-    def save_learning_image(self, sess, saver, comp_code):
-        file_path = self.get_session_path(comp_code)
-        saver.save(sess, file_path)
 
     def let_training(self, graph_params, comp_code, data_params):
         """학습을 시킨다."""
@@ -72,10 +97,10 @@ class Learning:
         rmse = graph_params['rmse']
         predictions = graph_params['predictions']
         X_closes = graph_params['X_closes']
-        loss_up_count = self.params['loss_up_count']
-        dropout_keep = self.params['dropout_keep']
-        iterations = self.params['iterations']
-        rmse_max = self.params['rmse_max']
+        loss_up_count = self.params.loss_up_count
+        dropout_keep = self.params.dropout_keep
+        iterations = self.params.iterations
+        rmse_max = self.params.rmse_max
 
         saver = tf.train.Saver()
         session_path = self.get_session_path(comp_code)
@@ -85,7 +110,7 @@ class Learning:
             init = tf.global_variables_initializer()
             sess.run(init)
 
-            if os.path.isfile(session_path + '.index'):
+            if self.exist_learning_image(comp_code):
                 saver.restore(sess, session_path)
                 iterations[0] = 0
                 restored = True
@@ -122,6 +147,6 @@ class Learning:
 
     def let_learning(self, comp_code, data_params):
         """그래프를 그리고 학습을 시킨다."""
-        stacked_rnn = StackedRnn(self.params,  self.y_is_up_down)
+        stacked_rnn = StackedRnn(self.params)
         graph_params = stacked_rnn.get_stacted_rnn_model()
         return self.let_training(graph_params, comp_code, data_params)

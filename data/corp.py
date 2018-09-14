@@ -23,12 +23,17 @@ class Corp:
         corp_codes = self.get_corps(to_listing_date, '종목코드')
         return corp_codes
 
-    def get_corps(self, to_listing_date='', columns=''):
+    def get_corps(self, to_listing_date='', columns=None):
         if not os.path.isfile(self._FILE_PATH):
             self._save_corps()
         corps = pd.read_excel(self._FILE_PATH)
         if to_listing_date != '':
             corps = corps.query("상장일<='{}'".format(to_listing_date))
-        if columns != '':
+        if not(columns is None):
             corps = corps[columns]
         return corps
+
+    def get_eval_corps(self):
+        data_columns = ['회사명', '종목코드']
+        return self.get_corps('1976-05-20', data_columns)
+

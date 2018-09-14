@@ -39,78 +39,21 @@
           <div class="body" role="main">
             
   <h1>Source code for model_evaluation_twins</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">data.corp</span> <span class="k">import</span> <span class="n">Corp</span>
-<span class="kn">from</span> <span class="nn">data.stocks</span> <span class="k">import</span> <span class="n">Stocks</span>
-<span class="kn">from</span> <span class="nn">data.trains_data</span> <span class="k">import</span> <span class="n">TrainsData</span>
-<span class="kn">from</span> <span class="nn">trains.learning</span> <span class="k">import</span> <span class="n">Learning</span>
-<span class="kn">from</span> <span class="nn">trains.mock_investment</span> <span class="k">import</span> <span class="n">MockInvestment</span>
-<span class="kn">from</span> <span class="nn">data.data_utils</span> <span class="k">import</span> <span class="n">DataUtils</span>
+<span></span><span class="kn">from</span> <span class="nn">data.corp</span> <span class="k">import</span> <span class="n">Corp</span>
+<span class="kn">from</span> <span class="nn">params.train_params</span> <span class="k">import</span> <span class="n">TrainParams</span>
+<span class="kn">from</span> <span class="nn">trains.learning_n_mock_investment</span> <span class="k">import</span> <span class="n">LearningNMockInvestment</span>
 
 
-<div class="viewcode-block" id="let_train_invest"><a class="viewcode-back" href="../model_evaluation_twins.html#model_evaluation_twins.let_train_invest">[docs]</a><span class="k">def</span> <span class="nf">let_train_invest</span><span class="p">(</span><span class="n">corp_code</span><span class="p">,</span> <span class="n">corp_name</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">no</span><span class="p">):</span>
-    <span class="n">stocks</span> <span class="o">=</span> <span class="n">Stocks</span><span class="p">()</span>
-    <span class="n">trains_data</span> <span class="o">=</span> <span class="n">TrainsData</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
-    <span class="n">learning</span> <span class="o">=</span> <span class="n">Learning</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
-    <span class="n">learning_all</span> <span class="o">=</span> <span class="n">Learning</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
-    <span class="n">invest</span> <span class="o">=</span> <span class="n">MockInvestment</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
-
-    <span class="n">stock_data</span> <span class="o">=</span> <span class="n">stocks</span><span class="o">.</span><span class="n">get_stock_data</span><span class="p">(</span><span class="n">corp_code</span><span class="p">)</span>
-    <span class="n">data_params</span><span class="p">,</span> <span class="n">scaler_close</span><span class="p">,</span> <span class="n">dataX_last</span> <span class="o">=</span> <span class="n">trains_data</span><span class="o">.</span><span class="n">get_train_test</span><span class="p">(</span><span class="n">stock_data</span><span class="p">)</span>
-    <span class="n">rmse_val</span><span class="p">,</span> <span class="n">train_cnt</span><span class="p">,</span> <span class="n">rmse_vals</span><span class="p">,</span> <span class="n">test_predict</span> <span class="o">=</span> <span class="n">learning</span><span class="o">.</span><span class="n">let_learning</span><span class="p">(</span><span class="n">corp_code</span><span class="p">,</span> <span class="n">data_params</span><span class="p">)</span>
-    <span class="n">rmse_val_all</span><span class="p">,</span> <span class="n">train_cnt_all</span><span class="p">,</span> <span class="n">rmse_vals_all</span><span class="p">,</span> <span class="n">test_predict_all</span> <span class="o">=</span> <span class="n">learning_all</span><span class="o">.</span><span class="n">let_learning</span><span class="p">(</span><span class="n">corp_code</span><span class="p">,</span> <span class="n">data_params</span><span class="p">)</span>
-    <span class="n">last_money</span><span class="p">,</span> <span class="n">last_predict</span><span class="p">,</span> <span class="n">invest_predicts</span><span class="p">,</span> <span class="n">all_invest_money</span> <span class="o">=</span> <span class="n">invest</span><span class="o">.</span><span class="n">let_invest_and_all</span><span class="p">(</span><span class="n">corp_code</span><span class="p">,</span> <span class="n">train_cnt</span><span class="p">,</span> <span class="n">dataX_last</span><span class="p">,</span>
-                                                                                    <span class="n">data_params</span><span class="p">)</span>
-    <span class="n">rmse_val</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">([</span><span class="n">rmse_val</span><span class="p">,</span> <span class="n">rmse_val_all</span><span class="p">])</span>
-    <span class="n">train_cnt</span> <span class="o">=</span> <span class="n">train_cnt</span> <span class="o">+</span> <span class="n">train_cnt_all</span>
-
-    <span class="nb">print</span><span class="p">(</span><span class="n">no</span><span class="p">,</span> <span class="n">corp_code</span><span class="p">,</span> <span class="n">corp_name</span><span class="p">,</span> <span class="n">rmse_val</span><span class="p">,</span> <span class="n">last_money</span><span class="p">,</span> <span class="n">all_invest_money</span><span class="p">,</span> <span class="n">train_cnt</span><span class="p">)</span>
-    <span class="k">return</span> <span class="p">[</span><span class="n">no</span><span class="p">,</span> <span class="n">corp_code</span><span class="p">,</span> <span class="n">corp_name</span><span class="p">,</span> <span class="n">rmse_val</span><span class="p">,</span> <span class="n">last_money</span><span class="p">,</span> <span class="n">all_invest_money</span><span class="p">,</span> <span class="n">train_cnt</span><span class="p">]</span></div>
-
-
-<div class="viewcode-block" id="let_train_invests"><a class="viewcode-back" href="../model_evaluation_twins.html#model_evaluation_twins.let_train_invests">[docs]</a><span class="k">def</span> <span class="nf">let_train_invests</span><span class="p">(</span><span class="n">corps</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">start_no</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">reult_file_name</span><span class="o">=</span><span class="s1">&#39;twins_result&#39;</span><span class="p">):</span>
-    <span class="n">comp_rmses</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">no</span> <span class="o">=</span> <span class="mi">1</span>
-    <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">corp_data</span> <span class="ow">in</span> <span class="n">corps</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
-        <span class="k">if</span> <span class="n">no</span> <span class="o">&lt;</span> <span class="n">start_no</span><span class="p">:</span>
-            <span class="n">no</span> <span class="o">+=</span> <span class="mi">1</span>
-            <span class="k">continue</span>
-        <span class="n">corp_code</span> <span class="o">=</span> <span class="n">corp_data</span><span class="p">[</span><span class="s1">&#39;종목코드&#39;</span><span class="p">]</span>
-        <span class="n">corp_name</span> <span class="o">=</span> <span class="n">corp_data</span><span class="p">[</span><span class="s1">&#39;회사명&#39;</span><span class="p">]</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="n">let_train_invest</span><span class="p">(</span><span class="n">corp_code</span><span class="p">,</span> <span class="n">corp_name</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">no</span><span class="p">)</span>
-        <span class="n">comp_rmses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">no</span> <span class="o">%</span> <span class="mi">10</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">df_comp_rmses</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">comp_rmses</span><span class="p">,</span>
-                                         <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;no&#39;</span><span class="p">,</span> <span class="s1">&#39;code&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;rmse&#39;</span><span class="p">,</span> <span class="s1">&#39;invest_result&#39;</span><span class="p">,</span> <span class="s1">&#39;all_invest_result&#39;</span><span class="p">,</span>
-                                                  <span class="s1">&#39;train_cnt&#39;</span><span class="p">])</span>
-            <span class="n">DataUtils</span><span class="o">.</span><span class="n">save_excel</span><span class="p">(</span><span class="n">df_comp_rmses</span><span class="p">,</span> <span class="s1">&#39;./result/&#39;</span> <span class="o">+</span> <span class="n">reult_file_name</span> <span class="o">+</span> <span class="s1">&#39;.xlsx&#39;</span><span class="p">)</span>
-        <span class="n">no</span> <span class="o">+=</span> <span class="mi">1</span></div>
-
-<div class="viewcode-block" id="main"><a class="viewcode-back" href="../model_evaluation_twins.html#model_evaluation_twins.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">start_no</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">reult_file_name</span><span class="o">=</span><span class="s1">&#39;twins_result&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../model_evaluation_twins.html#model_evaluation_twins.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">start_no</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="n">corp</span> <span class="o">=</span> <span class="n">Corp</span><span class="p">()</span>
-    <span class="n">corps</span> <span class="o">=</span> <span class="n">corp</span><span class="o">.</span><span class="n">get_corps</span><span class="p">(</span><span class="s1">&#39;1976-05-20&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;회사명&#39;</span><span class="p">,</span> <span class="s1">&#39;종목코드&#39;</span><span class="p">])</span>
+    <span class="n">corps</span> <span class="o">=</span> <span class="n">corp</span><span class="o">.</span><span class="n">get_eval_corps</span><span class="p">()</span>
 
     <span class="k">if</span> <span class="n">params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s1">&#39;seq_length&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>  <span class="c1"># 시퀀스 갯수</span>
-            <span class="s1">&#39;data_dim&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>  <span class="c1"># 입력 데이터 갯수</span>
-            <span class="s1">&#39;hidden_dims&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">128</span><span class="p">,</span> <span class="mi">96</span><span class="p">,</span> <span class="mi">64</span><span class="p">],</span>  <span class="c1"># 히든 레이어 갯수</span>
-            <span class="s1">&#39;dropout_keep&#39;</span><span class="p">:</span> <span class="mf">0.8</span><span class="p">,</span>  <span class="c1"># dropout</span>
-            <span class="s1">&#39;output_dim&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>  <span class="c1"># 출력 데이터 갯수</span>
-            <span class="s1">&#39;learning_rate&#39;</span><span class="p">:</span> <span class="mf">0.0001</span><span class="p">,</span>
-            <span class="s1">&#39;iterations&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">24</span><span class="p">,</span> <span class="mi">100</span><span class="p">],</span>  <span class="c1"># 최소, 최대 훈련 반복횟수</span>
-            <span class="s1">&#39;rmse_max&#39;</span><span class="p">:</span> <span class="mf">0.05</span><span class="p">,</span>
-            <span class="s1">&#39;train_percent&#39;</span><span class="p">:</span> <span class="mf">80.0</span><span class="p">,</span>  <span class="c1"># 훈련 데이터 퍼센트</span>
-            <span class="s1">&#39;loss_up_count&#39;</span><span class="p">:</span> <span class="mi">12</span><span class="p">,</span>  <span class="c1"># early stopping</span>
-            <span class="s1">&#39;invest_count&#39;</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span>  <span class="c1"># 투자 횟수</span>
-            <span class="s1">&#39;invest_money&#39;</span><span class="p">:</span> <span class="mi">10000000</span><span class="p">,</span>  <span class="c1"># 각 주식에 모의투자할 금액</span>
-            <span class="s1">&#39;fee_percent&#39;</span><span class="p">:</span> <span class="mf">0.015</span><span class="p">,</span>  <span class="c1"># 투자시 발생하는 수수료</span>
-            <span class="s1">&#39;tax_percent&#39;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span>  <span class="c1"># 매도시 발생하는 세금</span>
-            <span class="s1">&#39;invest_min_percent&#39;</span><span class="p">:</span> <span class="mf">0.6</span><span class="p">,</span>  <span class="c1"># 투자를 하는 최소 간격 퍼센트</span>
-            <span class="s1">&#39;kor_font_path&#39;</span><span class="p">:</span> <span class="s1">&#39;C:</span><span class="se">\\</span><span class="s1">WINDOWS</span><span class="se">\\</span><span class="s1">Fonts</span><span class="se">\\</span><span class="s1">H2GTRM.TTF&#39;</span>
-        <span class="p">}</span>
-    <span class="n">let_train_invests</span><span class="p">(</span><span class="n">corps</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">start_no</span><span class="p">,</span> <span class="n">reult_file_name</span><span class="p">)</span></div>
+        <span class="n">params</span> <span class="o">=</span> <span class="n">TrainParams</span><span class="p">()</span>
+        <span class="n">params</span><span class="o">.</span><span class="n">result_file_name</span> <span class="o">=</span> <span class="s1">&#39;training_invest_twins_result&#39;</span>
+
+    <span class="n">invests</span> <span class="o">=</span> <span class="n">LearningNMockInvestment</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+    <span class="n">invests</span><span class="o">.</span><span class="n">let_train_invests_twins</span><span class="p">(</span><span class="n">corps</span><span class="p">,</span> <span class="n">start_no</span><span class="p">)</span></div>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>

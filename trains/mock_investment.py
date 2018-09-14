@@ -8,22 +8,19 @@ from models.stacked_rnn import StackedRnn
 class MockInvestment:
     """모의투자"""
 
-    def __init__(self, params, is_all_corps_model=False, session_file_name='ALL_CORPS', y_is_up_down=False):
+    def __init__(self, params):
         self.params = params
-        self.all_corps_model = is_all_corps_model
-        self.session_file_name = session_file_name
-        self.y_is_up_down = y_is_up_down  # 결과 값을 오르는지 내리는 지로 수정함
 
     def let_invest_money(self, invest_predict, now_scaled_close, now_close, now_money, now_stock_cnt):
         """예측 값에 따라 매수 매도를 실행한다."""
-        if not self.y_is_up_down:
+        if not self.params.y_is_up_down:
             return self.let_invest_money_value(invest_predict, now_scaled_close, now_close, now_money, now_stock_cnt)
         else:
             return self.let_invest_money_up_down(invest_predict, now_close, now_money, now_stock_cnt)
 
     def let_invest_money_value(self, invest_predict, now_scaled_close, now_close, now_money, now_stock_cnt):
         """예측 값에 따라 매수 매도를 실행한다."""
-        invest_min_percent = self.params['invest_min_percent']
+        invest_min_percent = self.params.invest_min_percent
 
         ratio = (invest_predict - now_scaled_close) / now_scaled_close * 100
 
@@ -43,7 +40,7 @@ class MockInvestment:
 
     def buy_stock(self, now_money, now_close, now_stock_cnt):
         """주식을 산다."""
-        fee_percent = self.params['fee_percent']
+        fee_percent = self.params.fee_percent
         cnt = math.floor(now_money / now_close)
         if cnt > 0:
             fee = now_close * fee_percent / 100
@@ -62,8 +59,8 @@ class MockInvestment:
         """주식매도를 해서 돈으로 바꾼다."""
         money = 0
         if now_stock_cnt > 0:
-            fee_percent = self.params['fee_percent']
-            tax_percent = self.params['tax_percent']
+            fee_percent = self.params.fee_percent
+            tax_percent = self.params.tax_percent
 
             fee = now_close * fee_percent / 100
             tax = now_close * tax_percent / 100
@@ -78,14 +75,16 @@ class MockInvestment:
         last_pred_money = predict_money[0][0]
         return last_close_money, last_pred_money
 
-    def let_invest(self, comp_code, train_cnt, dataX_last, data_params):
+    def let_invest(self, comp_code, train_cnt, dataX_last, data_params, is_last=True, invest_count=None, invest_money=None,
+                   now_stock_cnt=None, all_invest_money=None, all_stock_count=None):
         """학습 후 모의 주식 거래를 한다."""
         stacked_rnn = StackedRnn(self.params)
-        learning = Learning(self.params, self.all_corps_model, self.session_file_name)
+        learning = Learning(self.params)
 
-        invest_count = self.params['invest_count']
-        invest_money = self.params['invest_money']
-
+        if invest_count is None:
+            invest_count = self.params.invest_count
+        if invest_money is None:
+            invest_money = self.params.invest_money
         investCloses = data_params['investCloses']
         investRealCloses = data_params['investRealCloses']
         investX = data_params['investX']
@@ -94,20 +93,22 @@ class MockInvestment:
         X = graph_params['X']
         Y_pred = graph_params['Y_pred']
         output_keep_prob = graph_params['output_keep_prob']
-
         session_file_path = learning.get_session_path(comp_code)
-
-        now_stock_cnt = 0
+        if now_stock_cnt is None:
+            now_stock_cnt = 0
+        if all_invest_money is None:
+            all_invest_money = invest_money
+        if all_stock_count is None:
+            all_stock_count = now_stock_cnt
+        predicts = []
+        now_close = 0
         saver = tf.train.Saver()
+
         with tf.Session() as sess:
             init = tf.global_variables_initializer()
             sess.run(init)
             saver.restore(sess, session_file_path)
 
-            all_invest_money = invest_money
-            all_stock_count = 0
-            predicts = []
-            now_close = 0
             for i in range(invest_count):
                 invest_predicts = sess.run(Y_pred, feed_dict={X: investX[i:i + 1], output_keep_prob: 1.0})
                 predicts.append(invest_predicts[0])
@@ -118,25 +119,26 @@ class MockInvestment:
                 #print(invest_predict, now_scaled_close, now_close)
                 invest_money, now_stock_cnt = self.let_invest_money(invest_predict, now_scaled_close, now_close,
                                                                     invest_money, now_stock_cnt)
-                if i == 0:
+                if i == 0 and not is_last:
                     all_invest_money, all_stock_count = self.let_invest_money(10.0, now_scaled_close, now_close,
                                                                               all_invest_money, all_stock_count)
-            invest_money += self.to_money(now_stock_cnt, now_close)
-            all_invest_money += self.to_money(all_stock_count, now_close)
+            if is_last:
+                invest_money += self.to_money(now_stock_cnt, now_close)
+                all_invest_money += self.to_money(all_stock_count, now_close)
 
             last_predict = sess.run(Y_pred, feed_dict={X: dataX_last, output_keep_prob: 1.0})
         # print(now_money)
-        return invest_money, last_predict, predicts, all_invest_money
+        return invest_money, last_predict, predicts, all_invest_money, now_stock_cnt, all_stock_count
 
     def let_invest_and_all(self, comp_code, train_cnt, dataX_last, data_params, all_sess_name='ALL_CORPS'):
         """학습 후 모의 주식 거래를 한다."""
 
         stacked_rnn = StackedRnn(self.params)
         learning = Learning(self.params)
-        learning_all = Learning(self.params, True, all_sess_name)
+        learning_all = Learning(self.params)
 
-        invest_count = self.params['invest_count']
-        invest_money = self.params['invest_money']
+        invest_count = self.params.invest_count
+        invest_money = self.params.invest_money
 
         # investX = data_params['investX']
         investCloses = data_params['investCloses']

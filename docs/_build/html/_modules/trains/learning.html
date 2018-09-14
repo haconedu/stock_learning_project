@@ -42,6 +42,7 @@
 <span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
 <span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">matplotlib.font_manager</span> <span class="k">as</span> <span class="nn">fm</span>
 <span class="kn">import</span> <span class="nn">matplotlib</span> <span class="k">as</span> <span class="nn">mpl</span>
@@ -52,28 +53,55 @@
 <div class="viewcode-block" id="Learning"><a class="viewcode-back" href="../../trains.learning.html#trains.learning.Learning">[docs]</a><span class="k">class</span> <span class="nc">Learning</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;학습을 시킨다&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">is_all_corps_model</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">session_file_name</span><span class="o">=</span><span class="s1">&#39;ALL_CORPS&#39;</span><span class="p">,</span> <span class="n">y_is_up_down</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="n">SESSIONS_DIR</span> <span class="o">=</span> <span class="s1">&#39;./data/files/sessions/&#39;</span>  <span class="c1"># 세션파일의 디렉토리 경로</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="n">params</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">all_corps_model</span> <span class="o">=</span> <span class="n">is_all_corps_model</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">session_file_name</span> <span class="o">=</span> <span class="n">session_file_name</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">y_is_up_down</span> <span class="o">=</span> <span class="n">y_is_up_down</span>  <span class="c1"># 결과 값을 오르는지 내리는 지로 수정함</span>
+
+<div class="viewcode-block" id="Learning.get_session_filename"><a class="viewcode-back" href="../../trains.learning.html#trains.learning.Learning.get_session_filename">[docs]</a>    <span class="k">def</span> <span class="nf">get_session_filename</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">corp_code</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;저장할 세션의 파일명&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">is_all_corps_model</span><span class="p">:</span>
+            <span class="n">file_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">session_file_name</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">file_name</span> <span class="o">=</span> <span class="n">DataUtils</span><span class="o">.</span><span class="n">to_string_corp_code</span><span class="p">(</span><span class="n">corp_code</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">file_name</span></div>
 
 <div class="viewcode-block" id="Learning.get_session_path"><a class="viewcode-back" href="../../trains.learning.html#trains.learning.Learning.get_session_path">[docs]</a>    <span class="k">def</span> <span class="nf">get_session_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">corp_code</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;저장할 세션의 경로 및 파일명&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_corps_model</span><span class="p">:</span>
-            <span class="n">file_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_file_name</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">file_name</span> <span class="o">=</span> <span class="n">DataUtils</span><span class="o">.</span><span class="n">to_string_corp_code</span><span class="p">(</span><span class="n">corp_code</span><span class="p">)</span>
-        <span class="k">return</span> <span class="s2">&quot;./data/files/sessions/&quot;</span> <span class="o">+</span> <span class="n">file_name</span> <span class="o">+</span> <span class="s2">&quot;.ckpt&quot;</span></div>
+        <span class="n">file_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_session_filename</span><span class="p">(</span><span class="n">corp_code</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_session_dir</span><span class="p">(</span><span class="n">corp_code</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">file_name</span> <span class="o">+</span> <span class="s2">&quot;.ckpt&quot;</span></div>
+
+<div class="viewcode-block" id="Learning.get_session_dir"><a class="viewcode-back" href="../../trains.learning.html#trains.learning.Learning.get_session_dir">[docs]</a>    <span class="k">def</span> <span class="nf">get_session_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">corp_code</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;저장할 세션의 디렉토리&quot;&quot;&quot;</span>
+        <span class="n">file_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_session_filename</span><span class="p">(</span><span class="n">corp_code</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">SESSIONS_DIR</span> <span class="o">+</span> <span class="n">file_name</span></div>
+
+<div class="viewcode-block" id="Learning.save_learning_image"><a class="viewcode-back" href="../../trains.learning.html#trains.learning.Learning.save_learning_image">[docs]</a>    <span class="k">def</span> <span class="nf">save_learning_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sess</span><span class="p">,</span> <span class="n">saver</span><span class="p">,</span> <span class="n">comp_code</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;학습데이터를 저장한다.&quot;&quot;&quot;</span>
+        <span class="n">file_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_session_path</span><span class="p">(</span><span class="n">comp_code</span><span class="p">)</span>
+        <span class="n">saver</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">sess</span><span class="p">,</span> <span class="n">file_path</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Learning.exist_learning_image"><a class="viewcode-back" href="../../trains.learning.html#trains.learning.Learning.exist_learning_image">[docs]</a>    <span class="k">def</span> <span class="nf">exist_learning_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">comp_code</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;학습데이터가 존재하는지 여부 &quot;&quot;&quot;</span>
+        <span class="n">session_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_session_path</span><span class="p">(</span><span class="n">comp_code</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">session_path</span> <span class="o">+</span> <span class="s1">&#39;.index&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Learning.delete_learning_image"><a class="viewcode-back" href="../../trains.learning.html#trains.learning.Learning.delete_learning_image">[docs]</a>    <span class="k">def</span> <span class="nf">delete_learning_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">comp_code</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;학습데이터를 삭제한다. &quot;&quot;&quot;</span>
+        <span class="n">session_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_session_dir</span><span class="p">(</span><span class="n">comp_code</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">session_dir</span><span class="p">):</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">session_dir</span><span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="Learning.draw_plot"><a class="viewcode-back" href="../../trains.learning.html#trains.learning.Learning.draw_plot">[docs]</a>    <span class="k">def</span> <span class="nf">draw_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rmse_vals</span><span class="p">,</span> <span class="n">test_predict</span><span class="p">,</span> <span class="n">invest_predicts</span><span class="p">,</span> <span class="n">comp_name</span><span class="p">,</span> <span class="n">data_params</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;그래프를 그린다.&quot;&quot;&quot;</span>
         <span class="n">testY</span> <span class="o">=</span> <span class="n">data_params</span><span class="p">[</span><span class="s1">&#39;testY&#39;</span><span class="p">]</span>
         <span class="n">investY</span> <span class="o">=</span> <span class="n">data_params</span><span class="p">[</span><span class="s1">&#39;investY&#39;</span><span class="p">]</span>
         <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">testY</span><span class="p">,</span> <span class="n">investY</span><span class="p">)</span>
         <span class="n">predict</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">test_predict</span><span class="p">,</span> <span class="n">invest_predicts</span><span class="p">)</span>
 
         <span class="n">mpl</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;axes.unicode_minus&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="n">font_name</span> <span class="o">=</span> <span class="n">fm</span><span class="o">.</span><span class="n">FontProperties</span><span class="p">(</span><span class="n">fname</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;kor_font_path&#39;</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span><span class="o">.</span><span class="n">get_name</span><span class="p">()</span>
+        <span class="n">font_name</span> <span class="o">=</span> <span class="n">fm</span><span class="o">.</span><span class="n">FontProperties</span><span class="p">(</span><span class="n">fname</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">kor_font_path</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span><span class="o">.</span><span class="n">get_name</span><span class="p">()</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">rc</span><span class="p">(</span><span class="s1">&#39;font&#39;</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="n">font_name</span><span class="p">)</span>
 
         <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
@@ -90,9 +118,6 @@
         <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">comp_name</span><span class="p">)</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="Learning.save_learning_image"><a class="viewcode-back" href="../../trains.learning.html#trains.learning.Learning.save_learning_image">[docs]</a>    <span class="k">def</span> <span class="nf">save_learning_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sess</span><span class="p">,</span> <span class="n">saver</span><span class="p">,</span> <span class="n">comp_code</span><span class="p">):</span>
-        <span class="n">file_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_session_path</span><span class="p">(</span><span class="n">comp_code</span><span class="p">)</span>
-        <span class="n">saver</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">sess</span><span class="p">,</span> <span class="n">file_path</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Learning.let_training"><a class="viewcode-back" href="../../trains.learning.html#trains.learning.Learning.let_training">[docs]</a>    <span class="k">def</span> <span class="nf">let_training</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">graph_params</span><span class="p">,</span> <span class="n">comp_code</span><span class="p">,</span> <span class="n">data_params</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;학습을 시킨다.&quot;&quot;&quot;</span>
@@ -113,10 +138,10 @@
         <span class="n">rmse</span> <span class="o">=</span> <span class="n">graph_params</span><span class="p">[</span><span class="s1">&#39;rmse&#39;</span><span class="p">]</span>
         <span class="n">predictions</span> <span class="o">=</span> <span class="n">graph_params</span><span class="p">[</span><span class="s1">&#39;predictions&#39;</span><span class="p">]</span>
         <span class="n">X_closes</span> <span class="o">=</span> <span class="n">graph_params</span><span class="p">[</span><span class="s1">&#39;X_closes&#39;</span><span class="p">]</span>
-        <span class="n">loss_up_count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;loss_up_count&#39;</span><span class="p">]</span>
-        <span class="n">dropout_keep</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;dropout_keep&#39;</span><span class="p">]</span>
-        <span class="n">iterations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;iterations&#39;</span><span class="p">]</span>
-        <span class="n">rmse_max</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;rmse_max&#39;</span><span class="p">]</span>
+        <span class="n">loss_up_count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">loss_up_count</span>
+        <span class="n">dropout_keep</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">dropout_keep</span>
+        <span class="n">iterations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">iterations</span>
+        <span class="n">rmse_max</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">rmse_max</span>
 
         <span class="n">saver</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">Saver</span><span class="p">()</span>
         <span class="n">session_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_session_path</span><span class="p">(</span><span class="n">comp_code</span><span class="p">)</span>
@@ -126,7 +151,7 @@
             <span class="n">init</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">global_variables_initializer</span><span class="p">()</span>
             <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">init</span><span class="p">)</span>
 
-            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">session_path</span> <span class="o">+</span> <span class="s1">&#39;.index&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">exist_learning_image</span><span class="p">(</span><span class="n">comp_code</span><span class="p">):</span>
                 <span class="n">saver</span><span class="o">.</span><span class="n">restore</span><span class="p">(</span><span class="n">sess</span><span class="p">,</span> <span class="n">session_path</span><span class="p">)</span>
                 <span class="n">iterations</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
                 <span class="n">restored</span> <span class="o">=</span> <span class="kc">True</span>
@@ -163,7 +188,7 @@
 
 <div class="viewcode-block" id="Learning.let_learning"><a class="viewcode-back" href="../../trains.learning.html#trains.learning.Learning.let_learning">[docs]</a>    <span class="k">def</span> <span class="nf">let_learning</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">comp_code</span><span class="p">,</span> <span class="n">data_params</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;그래프를 그리고 학습을 시킨다.&quot;&quot;&quot;</span>
-        <span class="n">stacked_rnn</span> <span class="o">=</span> <span class="n">StackedRnn</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">,</span>  <span class="bp">self</span><span class="o">.</span><span class="n">y_is_up_down</span><span class="p">)</span>
+        <span class="n">stacked_rnn</span> <span class="o">=</span> <span class="n">StackedRnn</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
         <span class="n">graph_params</span> <span class="o">=</span> <span class="n">stacked_rnn</span><span class="o">.</span><span class="n">get_stacted_rnn_model</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">let_training</span><span class="p">(</span><span class="n">graph_params</span><span class="p">,</span> <span class="n">comp_code</span><span class="p">,</span> <span class="n">data_params</span><span class="p">)</span></div></div>
 </pre></div>

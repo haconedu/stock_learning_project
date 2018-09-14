@@ -42,13 +42,43 @@
 <span id="trains-learning-module"></span><h1>trains.learning module<a class="headerlink" href="#module-trains.learning" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="trains.learning.Learning">
-<em class="property">class </em><code class="descclassname">trains.learning.</code><code class="descname">Learning</code><span class="sig-paren">(</span><em>params</em>, <em>is_all_corps_model=False</em>, <em>session_file_name='ALL_CORPS'</em>, <em>y_is_up_down=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/trains/learning.html#Learning"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#trains.learning.Learning" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">trains.learning.</code><code class="descname">Learning</code><span class="sig-paren">(</span><em>params</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/trains/learning.html#Learning"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#trains.learning.Learning" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
 <p>학습을 시킨다</p>
+<dl class="attribute">
+<dt id="trains.learning.Learning.SESSIONS_DIR">
+<code class="descname">SESSIONS_DIR</code><em class="property"> = './data/files/sessions/'</em><a class="headerlink" href="#trains.learning.Learning.SESSIONS_DIR" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="trains.learning.Learning.delete_learning_image">
+<code class="descname">delete_learning_image</code><span class="sig-paren">(</span><em>comp_code=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/trains/learning.html#Learning.delete_learning_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#trains.learning.Learning.delete_learning_image" title="Permalink to this definition">¶</a></dt>
+<dd><p>학습데이터를 삭제한다.</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="trains.learning.Learning.draw_plot">
 <code class="descname">draw_plot</code><span class="sig-paren">(</span><em>rmse_vals</em>, <em>test_predict</em>, <em>invest_predicts</em>, <em>comp_name</em>, <em>data_params</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/trains/learning.html#Learning.draw_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#trains.learning.Learning.draw_plot" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>그래프를 그린다.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="trains.learning.Learning.exist_learning_image">
+<code class="descname">exist_learning_image</code><span class="sig-paren">(</span><em>comp_code</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/trains/learning.html#Learning.exist_learning_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#trains.learning.Learning.exist_learning_image" title="Permalink to this definition">¶</a></dt>
+<dd><p>학습데이터가 존재하는지 여부</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="trains.learning.Learning.get_session_dir">
+<code class="descname">get_session_dir</code><span class="sig-paren">(</span><em>corp_code</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/trains/learning.html#Learning.get_session_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#trains.learning.Learning.get_session_dir" title="Permalink to this definition">¶</a></dt>
+<dd><p>저장할 세션의 디렉토리</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="trains.learning.Learning.get_session_filename">
+<code class="descname">get_session_filename</code><span class="sig-paren">(</span><em>corp_code</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/trains/learning.html#Learning.get_session_filename"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#trains.learning.Learning.get_session_filename" title="Permalink to this definition">¶</a></dt>
+<dd><p>저장할 세션의 파일명</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="trains.learning.Learning.get_session_path">
@@ -71,7 +101,8 @@
 <dl class="method">
 <dt id="trains.learning.Learning.save_learning_image">
 <code class="descname">save_learning_image</code><span class="sig-paren">(</span><em>sess</em>, <em>saver</em>, <em>comp_code</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/trains/learning.html#Learning.save_learning_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#trains.learning.Learning.save_learning_image" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>학습데이터를 저장한다.</p>
+</dd></dl>
 
 </dd></dl>
 

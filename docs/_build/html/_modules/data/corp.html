@@ -64,15 +64,20 @@
         <span class="n">corp_codes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_corps</span><span class="p">(</span><span class="n">to_listing_date</span><span class="p">,</span> <span class="s1">&#39;종목코드&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">corp_codes</span></div>
 
-<div class="viewcode-block" id="Corp.get_corps"><a class="viewcode-back" href="../../data.corp.html#data.corp.Corp.get_corps">[docs]</a>    <span class="k">def</span> <span class="nf">get_corps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">to_listing_date</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="Corp.get_corps"><a class="viewcode-back" href="../../data.corp.html#data.corp.Corp.get_corps">[docs]</a>    <span class="k">def</span> <span class="nf">get_corps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">to_listing_date</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_FILE_PATH</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_save_corps</span><span class="p">()</span>
         <span class="n">corps</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_FILE_PATH</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">to_listing_date</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
             <span class="n">corps</span> <span class="o">=</span> <span class="n">corps</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s2">&quot;상장일&lt;=&#39;</span><span class="si">{}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">to_listing_date</span><span class="p">))</span>
-        <span class="k">if</span> <span class="n">columns</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span><span class="p">(</span><span class="n">columns</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
             <span class="n">corps</span> <span class="o">=</span> <span class="n">corps</span><span class="p">[</span><span class="n">columns</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">corps</span></div></div>
+        <span class="k">return</span> <span class="n">corps</span></div>
+
+<div class="viewcode-block" id="Corp.get_eval_corps"><a class="viewcode-back" href="../../data.corp.html#data.corp.Corp.get_eval_corps">[docs]</a>    <span class="k">def</span> <span class="nf">get_eval_corps</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">data_columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;회사명&#39;</span><span class="p">,</span> <span class="s1">&#39;종목코드&#39;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_corps</span><span class="p">(</span><span class="s1">&#39;1976-05-20&#39;</span><span class="p">,</span> <span class="n">data_columns</span><span class="p">)</span></div></div>
+
 </pre></div>
 
           </div>
