@@ -33,7 +33,7 @@ class LearningNMockTop10:
                 else:
                     invest_row = invest_data[j]
                     self.let_train_top10(i, j, corp_data, invest_row)
-                print(i, j, invest_row)
+                #print(i, j, invest_row)
                 j += 1
             self.let_invest_top10(i,invest_data)
             print()
@@ -67,6 +67,7 @@ class LearningNMockTop10:
             all_invest_money, all_stock_count = invest.buy_stock(self.params.invest_money, last_close_money, now_stock_cnt)
             invest_row = [j, corp_code, corp_name, last_pred_ratio, last_close_money, 0, 0, all_invest_money, all_stock_count]
         else:
+            #print(invest_row)
             invest_row[3] = last_pred_ratio
             invest_row[4] = last_close_money
         return invest_row
@@ -74,13 +75,13 @@ class LearningNMockTop10:
     def let_invest_top10(self, i, invest_data):
         """ top10 방법으로 모의투자한다."""
         invest = MockInvestment(self.params)
-        invest_data.sort(key=itemgetter(3))
+        invest_data.sort(key=itemgetter(3), reverse=True)
         data_len = len(invest_data)
 
         # 주식을 판다.
         if i==0:
             selled_cnt = 0
-            total_money = self.params.invest_money * 10;
+            total_money = self.params.invest_money * 10
         else:
             selled_cnt = 0
             total_money = 0
@@ -108,9 +109,10 @@ class LearningNMockTop10:
         # 주식을 구매한다.
         top_cnt = 0
         for i in range(data_len):
-            invest_row = invest_data[1]
+            invest_row = invest_data[i]
             last_pred_ratio = invest_row[3]
             if last_pred_ratio < self.MAX_PERCENT and top_cnt < 10:
+                print("before", i, invest_row)
                 top_cnt += 1
                 now_stock_cnt = invest_row[6]
                 if now_stock_cnt == 0:
@@ -119,6 +121,7 @@ class LearningNMockTop10:
                     now_money, now_stock_cnt = invest.buy_stock(allow_money, now_close, now_stock_cnt)
                     invest_row[5] = now_money
                     invest_row[6] = now_stock_cnt
+                    print("after", i, invest_row)
 
         invest_data.sort(key=itemgetter(0))
 

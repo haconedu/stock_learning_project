@@ -49,25 +49,15 @@ class LearningNMockInvestment:
                 learning = Learning(self.params)
                 learning.delete_learning_image(corp_code)
 
-            total_rmse_val = 0
-            last_money = self.params.invest_money
-            now_stock_cnt = 0
-            all_invest_money = last_money
-            all_stock_count = 0
-            train_cnt = 0
-            for i in range(invest_count):
-                stock_data_now = stock_data[:i-invest_count]
-                is_last = i+1 == invest_count
-                rmse_val_1, last_money, all_invest_money, train_cnt_1, now_stock_cnt, all_stock_count = \
-                    self.let_train_invest_one(corp_code, stock_data_now, last_money, now_stock_cnt, is_last, all_invest_money, all_stock_count)
-                total_rmse_val += rmse_val_1
-                train_cnt += train_cnt_1
-            rmse_val = total_rmse_val/invest_count
+            invest = MockInvestment(self.params)
+            rmse_val, train_cnt, data_params, dataX_last, scaler_close = self.let_train_only(corp_code, stock_data)
+            last_money, last_predict, invest_predicts, all_invest_money = invest.let_invest(corp_code, dataX_last,
+                                                                                        data_params)
 
         if self.params.result_type == 'forcast':
             invest = MockInvestment(self.params)
-            last_money, last_predict, invest_predicts, all_invest_money, now_stock_cnt, all_stock_count = \
-                invest.let_invest(corp_code, train_cnt, dataX_last, data_params)
+            last_money, last_predict, invest_predicts, all_invest_money = \
+                invest.let_invest(corp_code, dataX_last, data_params)
             last_date = stock_data.tail(1)['date'].to_string(index=False)
             last_close_money, last_pred_money = invest.get_real_money(data_params, scaler_close, last_predict)
             last_pred_ratio = (last_pred_money - last_close_money) / last_close_money * 100
@@ -93,9 +83,8 @@ class LearningNMockInvestment:
         data_params, scaler_close, dataX_last = trains_data.get_train_test(stock_data)
         rmse_val, train_cnt, rmse_vals, test_predict = learning.let_learning(corp_code, data_params)
         rmse_val_all, train_cnt_all, rmse_vals_all, test_predict_all = learning_all.let_learning(corp_code, data_params)
-        last_money, last_predict, invest_predicts, all_invest_money = invest.let_invest_and_all(corp_code, train_cnt,
-                                                                                                dataX_last,
-                                                                                                data_params)
+        last_money, last_predict, invest_predicts, all_invest_money = \
+            invest.let_invest_and_all(corp_code, dataX_last, data_params, params_all)
         rmse_val = np.mean([rmse_val, rmse_val_all])
         train_cnt = train_cnt + train_cnt_all
 
@@ -114,16 +103,13 @@ class LearningNMockInvestment:
         return rmse_val, train_cnt, data_params, dataX_last, scaler_close
 
 
-    def let_train_invest_one(self, corp_code, stock_data, invest_money=None, now_stock_cnt=None,
-                             is_last=False, all_invest_money=None, all_stock_count=None):
+    def let_train_invest_one(self, corp_code, stock_data):
         """입력한 회사에 대해서 학습시키고 한번의 모의투자를 실행한다."""
-
         invest = MockInvestment(self.params)
 
         rmse_val, train_cnt, data_params, dataX_last, scaler_close = self.let_train_only(corp_code, stock_data, 1)
-        last_money, last_predict, invest_predicts, all_invest_money, now_stock_cnt, all_stock_count = \
-            invest.let_invest(corp_code, train_cnt, dataX_last, data_params, is_last, 1, invest_money, now_stock_cnt, all_invest_money, all_stock_count)
-        return rmse_val, last_money, all_invest_money, train_cnt, now_stock_cnt, all_stock_count
+        last_money, last_predict, invest_predicts, all_invest_money = invest.let_invest(corp_code, dataX_last, data_params)
+        return rmse_val, last_money, all_invest_money, train_cnt
 
     def let_train_invests(self, corps, start_no=1):
         """입력한 회사들에 대해서 학습시키고 모의투자를 실행한다."""
@@ -177,6 +163,7 @@ class LearningNMockInvestment:
             if no % 10 == 0:
                 df_comp_rmses = pd.DataFrame(comp_rmses, columns=self.result_columns)
                 DataUtils.save_excel(df_comp_rmses, self.get_result_file_path())
+            no += 1
 
     def get_result_file_path(self):
         """결과를 저장할 경로"""

@@ -51,6 +51,27 @@ def train_to_one_session(start_no=1, params=None):
     invests.let_train_invests(corps, start_no)
 
 
+def train_all_corps(start_no=1):
+    """하나의 세션으로 모든 회사를 학습시킨다.  """
+    corp = Corp()
+    corps = corp.get_corps()
+
+    params = TrainParams()
+    params.is_all_corps_model = True
+    params.result_file_name = 'training_all_corps'
+    invests = LearningNMockInvestment(params)
+    invests.let_train_invests(corps, start_no)
+
+
+def train_to_one_session_long_early_stop(start_no=1):
+    params = TrainParams()
+    params.is_all_corps_model = True
+    params.result_file_name = 'training_invest_all_result_es100'
+    params.loss_up_count = 100
+    params.rmse_max = 0.02
+    train_to_one_session(start_no, params)
+
+
 def train_up_down_to_one_session(start_no=1, params=None):
     """결과를 1,0으로 학습"""
     corps = get_corps()
@@ -69,4 +90,4 @@ def train_up_down_to_one_session(start_no=1, params=None):
 
 
 if __name__ == '__main__':
-    train_to_one_session()
+    train_all_corps()

@@ -8,10 +8,10 @@ def main(corp_names=None):
         corp_names = ["삼성중공업", "기아자동차", "게임빌", "루트로닉", "영진약품", "대아티아이"]
 
     params = TrainParams()
-    params.iterations = [0, 1000]
-    params.rmse_max = 0.02
-    params.loss_up_count = 100
+    params.is_all_corps_model = True
     params.result_file_name = 'next_forcast_result'
+    params.result_type = 'forcast'
+    params.invest_count = 0
 
     invests = LearningNMockInvestment(params)
     invests.let_train_invests_for_name(corp_names)
