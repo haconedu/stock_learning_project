@@ -10,7 +10,7 @@ class TrainParams:
         self.dropout_keep = 0.8  # dropout
         self.output_dim = 1  # 출력 데이터 갯수
         self.learning_rate = 0.0001
-        self.iterations = [24, 1000]  # 최소, 최대 훈련 반복횟수
+        self.iterations = [24, 120]  # 최소, 최대 훈련 반복횟수
         self.rmse_max = 0.05
         self.train_percent = 80.0  # 훈련 데이터 퍼센트
         self.loss_up_count = 12  # early stopping
