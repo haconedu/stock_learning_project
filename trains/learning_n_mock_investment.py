@@ -36,9 +36,6 @@ class LearningNMockInvestment:
         stock_data = stocks.get_stock_data(corp_code)
 
         invest_count =  self.params.invest_count
-        dataX_last = None
-        data_params = None
-        scaler_close = None
 
         if invest_count == 0:
             rmse_val, train_cnt, data_params, dataX_last, scaler_close = self.let_train_only(corp_code, stock_data)
@@ -126,7 +123,12 @@ class LearningNMockInvestment:
                 continue
             corp_code = corp_data['종목코드']
             corp_name = corp_data['회사명']
-            result = self.let_train_invest(corp_code, corp_name, no)
+            try :
+                result = self.let_train_invest(corp_code, corp_name, no)
+            except Exception as inst:
+                print(inst)
+                continue
+
             comp_rmses.append(result)
             if no % 10 == 0:
                 df_comp_rmses = pd.DataFrame(comp_rmses, columns=self.result_columns)
