@@ -6,6 +6,7 @@ def main(corp_names=None):
 
     if corp_names is None:
         corp_names = ["삼성중공업", "기아자동차", "게임빌", "루트로닉", "영진약품", "대아티아이"]
+        #corp_names = ["JYP Ent.", "KTH"]
 
     params = TrainParams()
     params.is_all_corps_model = True

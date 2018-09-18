@@ -17,8 +17,8 @@ class TrainParams:
         self.invest_count = 20  # 투자 횟수
         self.invest_money = 10000000  # 각 주식에 모의투자할 금액
         self.fee_percent = 0.015  # 투자시 발생하는 수수료
-        self.tax_percent = 0.5  # 매도시 발생하는 세금
-        self.invest_min_percent = 0.6  # 투자를 하는 최소 간격 퍼센트
+        self.tax_percent = 0.3  # 매도시 발생하는 세금
+        self.invest_min_percent = 0.315  # 투자를 하는 최소 간격 퍼센트
         self.kor_font_path = 'C:\\WINDOWS\\Fonts\\H2GTRM.TTF'
         self.remove_session_file = False
         self.is_all_corps_model = False

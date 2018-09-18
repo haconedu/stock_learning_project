@@ -12,7 +12,7 @@ class Stocks:
         """ 네이버 금융(http://finance.naver.com)에 넣어줌 """
         return 'http://finance.naver.com/item/sise_day.nhn?code={code}'.format(code=comp_code)
 
-    def get_stock_naver_data(self, comp_code, start_date):
+    def _get_stock_naver_data(self, comp_code, start_date):
         """네이버 매일 주식정보를 가져온다."""
         url = self._get_naver_url(comp_code)
         df = pd.DataFrame()
@@ -71,11 +71,11 @@ class Stocks:
             date_last = stock_data.tail(1)['date'].to_string(index=False)
             date_next = DateUtils.to_date(date_last) + datetime.timedelta(days=1)
             date_next = date_next.strftime("%Y-%m-%d")
-            new_data = self.get_stock_naver_data(comp_code, date_next)
+            new_data = self._get_stock_naver_data(comp_code, date_next)
             if len(new_data) > 0:
                 stock_data = stock_data.append(new_data, ignore_index=True)
                 stock_data.to_csv(file_path, index=False)
         else:
-            stock_data = self.get_stock_naver_data(comp_code, '')
+            stock_data = self._get_stock_naver_data(comp_code, '')
             stock_data.to_csv(file_path, index=False)
         return stock_data
