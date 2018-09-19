@@ -22,6 +22,8 @@ class MockInvestment:
         """예측 값에 따라 매수 매도를 실행한다."""
         invest_min_percent = self.params.invest_min_percent
 
+        if now_scaled_close == 0:
+            now_scaled_close = 0.000000001
         ratio = (invest_predict - now_scaled_close) / now_scaled_close * 100
 
         if ratio > invest_min_percent:

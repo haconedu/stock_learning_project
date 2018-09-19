@@ -75,4 +75,4 @@ def train_up_down_to_one_session(start_no=1, params=None):
 
 
 if __name__ == '__main__':
-    train_deep_all_corps(339)
+    train_deep_all_corps(2000)
