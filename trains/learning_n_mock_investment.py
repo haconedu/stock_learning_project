@@ -4,6 +4,7 @@ import copy
 
 from data.stocks import Stocks
 from data.trains_data import TrainsData
+from params.train_params import TrainParams
 from trains.learning import Learning
 from trains.mock_investment import MockInvestment
 from data.data_utils import DataUtils
@@ -32,7 +33,7 @@ class LearningNMockInvestment:
     def let_train_invest(self, corp_code, corp_name, no):
         """입력한 회사에 대해서 학습시키고 모의투자를 실행한다."""
 
-        stocks = Stocks()
+        stocks = Stocks(self.params)
         stock_data = stocks.get_stock_data(corp_code)
 
         invest_count =  self.params.invest_count
@@ -68,11 +69,10 @@ class LearningNMockInvestment:
 
     def let_train_invest_twins(self, corp_code, corp_name, no):
         """겨별 세션과 통합세션에서 예측한 값의 평균을 예측값으로 한다."""
-        stocks = Stocks()
+        stocks = Stocks(self.params)
         trains_data = TrainsData(self.params)
         learning = Learning(self.params)
-        params_all = copy.copy(self.params)
-        params_all.is_all_corps_model = True
+        params_all = TrainParams('ALL_CORPS')
         learning_all = Learning(params_all)
         invest = MockInvestment(self.params)
 

@@ -4,22 +4,40 @@ from params.train_params import TrainParams
 from trains.learning_n_mock_top10 import LearningNMockTop10
 
 
-def train_n_invest(start_no=1):
+def get_corps():
     corp = Corp()
-    corps = corp.get_eval_corps()
+    return corp.get_eval_corps()
 
-    params = TrainParams()
+
+def train(type='ALL_CORPS', start_no=1):
+    """하나의 세션으로 학습시키는 기본 모델 """
+    corps = get_corps()
+
+    params = TrainParams(type)
     invests = LearningNMockInvestment(params)
     invests.let_train_invests(corps, start_no)
 
 
-def long_early_stop(start_no=1):
+def train_all_corps(type='ALL_CORPS', start_no=1):
+    """하나의 세션으로 모든 회사를 학습시킨다.  """
     corp = Corp()
-    corps = corp.get_eval_corps()
+    corps = corp.get_corps()
+
+    params = TrainParams(type)
+    params.result_file_name = "training_" + type.lower() + "_result"
+    invests = LearningNMockInvestment(params)
+    invests.let_train_invests(corps, start_no)
+
+
+def train_up_down(start_no=1):
+    """결과를 1,0으로 학습"""
+    corps = get_corps()
 
     params = TrainParams()
-    params.loss_up_count = 100
-    params.rmse_max = 0.02
+    params.is_all_corps_model = True
+    params.result_file_name = 'training_invest_all_updown_result'
+    params.session_file_name = 'ALL_CORPS_UPDOWN'
+    params.y_is_up_down = True
     invests = LearningNMockInvestment(params)
     invests.let_train_invests(corps, start_no)
 
@@ -34,5 +52,17 @@ def top10_model():
     invests = LearningNMockTop10(params)
     invests.let_train_invests_top10(corps)
 
+
+def twins(start_no=1):
+    corp = Corp()
+    corps = corp.get_eval_corps()
+
+    params = TrainParams("EACH")
+    params.result_file_name = 'twins_result'
+
+    invests = LearningNMockInvestment(params)
+    invests.let_train_invests_twins(corps, start_no)
+    
+
 if __name__ == '__main__':
-    long_early_stop()
+    train()

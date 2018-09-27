@@ -1,10 +1,14 @@
 
-
 class TrainParams:
     """학습을 위한 파라미터를 정의한다."""
 
+<<<<<<< HEAD
+    def __init__(self, model_type='ALL_CORPS'):
+        self.seq_length = 10  # 시퀀스 갯수
+=======
     def __init__(self):
         self.seq_length = 5  # 시퀀스 갯수
+>>>>>>> parent of 65abb1ca... 모델튜닝
         self.data_dim = 5  # 입력 데이터 갯수
         self.hidden_dims = [128, 96, 64]  # 히든 레이어 갯수
         self.dropout_keep = 0.8  # dropout
@@ -12,8 +16,14 @@ class TrainParams:
         self.learning_rate = 0.0001
         self.iterations = [24, 120]  # 최소, 최대 훈련 반복횟수
         self.rmse_max = 0.05
+<<<<<<< HEAD
+        self.hidden_dims = [128, 96, 64, 32, 16]
+        self.iterations = [80, 400]  # 최소, 최대 훈련 반복횟수
+        self.loss_up_count = 40  # early stopping
+=======
         self.train_percent = 80.0  # 훈련 데이터 퍼센트
         self.loss_up_count = 12  # early stopping
+>>>>>>> parent of 65abb1ca... 모델튜닝
         self.invest_count = 20  # 투자 횟수
         self.invest_money = 10000000  # 각 주식에 모의투자할 금액
         self.fee_percent = 0.015  # 투자시 발생하는 수수료
@@ -21,9 +31,32 @@ class TrainParams:
         self.invest_min_percent = 0.315  # 투자를 하는 최소 간격 퍼센트
         self.kor_font_path = 'C:\\WINDOWS\\Fonts\\H2GTRM.TTF'
         self.remove_session_file = False
+<<<<<<< HEAD
+        self.is_all_corps_model = True
+        self.y_is_up_down = False  # 결과 값을 오르는지 내리는 지로 수정함
+        self.result_type = 'default'
+        self.invest_type = 'default'
+        self.session_file_name = model_type
+        self.result_file_name = model_type.lower() + '_result'
+        self.remove_stock_days = 1
+
+        if model_type == 'ALL_CORPS_UPDOWN':
+            self.y_is_up_down = True
+
+        elif model_type == 'EACH':
+            self.is_all_corps_model = False
+
+        elif model_type == 'FORCAST':
+            self.is_all_corps_model = False
+            #self.session_file_name = 'ALL_CORPS'
+            self.result_type = 'forcast'
+            self.invest_count = 0
+            self.remove_stock_days = 0
+=======
         self.is_all_corps_model = False
         self.result_file_name = 'training_invest_result'
         self.session_file_name = 'ALL_CORPS'
         self.y_is_up_down = False  # 결과 값을 오르는지 내리는 지로 수정함
         self.result_type = 'default'
         self.invest_type = 'default'
+>>>>>>> parent of 65abb1ca... 모델튜닝

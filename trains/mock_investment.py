@@ -34,9 +34,9 @@ class MockInvestment:
 
     def let_invest_money_up_down(self, invest_predict, now_close, now_money, now_stock_cnt):
         """예측 값에 따라 매수 매도를 실행한다."""
-        if invest_predict > 0.51:
+        if invest_predict > 0.01:
             now_money, now_stock_cnt = self.buy_stock(now_money, now_close, now_stock_cnt)
-        elif invest_predict < 0.49 :
+        elif invest_predict < -0.01 :
             now_money, now_stock_cnt = self.sell_stock(now_money, now_close, now_stock_cnt)
         return now_money, now_stock_cnt
 
@@ -121,33 +121,21 @@ class MockInvestment:
             all_invest_money += self.to_money(all_stock_count, now_close)
 
             last_predict = sess.run(Y_pred, feed_dict={X: dataX_last, output_keep_prob: 1.0})
+            sess.close()
         # print(now_money)
         return invest_money, last_predict, predicts, all_invest_money
 
     def let_invest_and_all(self, comp_code, dataX_last, data_params, params_all):
         """학습 후 모의 주식 거래를 한다."""
 
-        stacked_rnn = StackedRnn(self.params)
-        learning = Learning(self.params)
-        learning_all = Learning(params_all)
-
         invest_count = self.params.invest_count
         invest_money = self.params.invest_money
 
-        # investX = data_params['investX']
         investCloses = data_params['investCloses']
         investRealCloses = data_params['investRealCloses']
         investX = data_params['investX']
 
-        graph_params = stacked_rnn.get_stacted_rnn_model()
-        X = graph_params['X']
-        Y_pred = graph_params['Y_pred']
-        output_keep_prob = graph_params['output_keep_prob']
-
         now_stock_cnt = 0
-
-        file_path = learning.get_session_path(comp_code)
-        file_path_all = learning_all.get_session_path(comp_code)
 
         all_invest_money = invest_money
         all_stock_count = 0
@@ -155,21 +143,9 @@ class MockInvestment:
         predicts = []
         for i in range(invest_count):
 
-            saver = tf.train.Saver()
-            with tf.Session() as sess:
-                init = tf.global_variables_initializer()
-                sess.run(init)
-                saver.restore(sess, file_path)
-                invest_predicts = sess.run(Y_pred, feed_dict={X: investX[i:i + 1], output_keep_prob: 1.0})
-                invest_predict = invest_predicts[0][0]
-
-            saver_all = tf.train.Saver()
-            with tf.Session() as sess_all:
-                init_all = tf.global_variables_initializer()
-                sess_all.run(init_all)
-                saver_all.restore(sess_all, file_path_all)
-                invest_predicts_all = sess_all.run(Y_pred, feed_dict={X: investX[i:i + 1], output_keep_prob: 1.0})
-                invest_predict_all = invest_predicts_all[0][0]
+            x = investX[i:i + 1]
+            invest_predict = self._get_predict(self.params, comp_code, x)
+            invest_predict_all = self._get_predict(params_all, comp_code, x)
 
             invest_predict = np.mean([invest_predict, invest_predict_all])
             predicts.append([invest_predict])
@@ -186,20 +162,26 @@ class MockInvestment:
         all_invest_money += self.to_money(all_stock_count, now_close)
 
         # 마지막 예측 값을 구한다.
+        last_predict = self._get_predict(self.params, comp_code, dataX_last)
+        last_predict_all = self._get_predict(params_all, comp_code, dataX_last)
+        last_predict = np.mean([last_predict, last_predict_all])
+
+        return invest_money, last_predict, predicts, all_invest_money
+
+
+    def _get_predict(self, params, comp_code, investX):
+        stacked_rnn = StackedRnn(params)
+        graph_params = stacked_rnn.get_stacted_rnn_model()
+        Y_pred = graph_params['Y_pred']
+        output_keep_prob = graph_params['output_keep_prob']
+        X = graph_params['X']
+        learning = Learning(params)
+        file_path = learning.get_session_path(comp_code)
+
         saver = tf.train.Saver()
         with tf.Session() as sess:
             init = tf.global_variables_initializer()
             sess.run(init)
             saver.restore(sess, file_path)
-            last_predict = sess.run(Y_pred, feed_dict={X: dataX_last, output_keep_prob: 1.0})
-
-        saver_all = tf.train.Saver()
-        with tf.Session() as sess_all:
-            init_all = tf.global_variables_initializer()
-            sess_all.run(init_all)
-            saver_all.restore(sess_all, file_path_all)
-            last_predict_all = sess_all.run(Y_pred, feed_dict={X: dataX_last, output_keep_prob: 1.0})
-
-        last_predict = np.mean([last_predict, last_predict_all])
-
-        return invest_money, last_predict, predicts, all_invest_money
+            last_predict = sess.run(Y_pred, feed_dict={X: investX, output_keep_prob: 1.0})
+        return last_predict

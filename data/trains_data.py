@@ -54,7 +54,7 @@ class TrainsData:
         else:
             for i in range(0, y_len - seq_length):
                 _x = x[i:i + seq_length]
-                _y = [0]
+                _y = [-1]
                 if 0 != i and y[i + seq_length] > y[i + seq_length -1]:
                     _y = [1]
                 dataX.append(_x)
