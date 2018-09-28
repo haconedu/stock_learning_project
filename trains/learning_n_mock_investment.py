@@ -127,6 +127,7 @@ class LearningNMockInvestment:
                 result = self.let_train_invest(corp_code, corp_name, no)
             except Exception as inst:
                 print(inst)
+                no += 1
                 continue
 
             comp_rmses.append(result)
@@ -160,7 +161,13 @@ class LearningNMockInvestment:
                 continue
             corp_code = corp_data['종목코드']
             corp_name = corp_data['회사명']
-            result = self.let_train_invest_twins(corp_code, corp_name, no)
+            try :
+                result = self.let_train_invest_twins(corp_code, corp_name, no)
+            except Exception as inst:
+                print(inst)
+                no += 1
+                continue
+
             comp_rmses.append(result)
             if no % 10 == 0:
                 df_comp_rmses = pd.DataFrame(comp_rmses, columns=self.result_columns)

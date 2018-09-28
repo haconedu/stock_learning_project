@@ -17,11 +17,14 @@ class TrainsData:
         elif isinstance(cols_data, DataFrame):
             return cols_data.as_matrix()
 
-    def get_scaled_cols(self, data, column_name):
+    def get_scaled_cols(self, data, column_name, scaler=None):
         """컬럼을 스케일링을 시킨다."""
         scale_data = self.to_ndarray(data[column_name])
-        scaler = preprocessing.MinMaxScaler()
-        return scaler.fit_transform(scale_data), scaler
+        if scaler is None:
+            scaler = preprocessing.MinMaxScaler()
+            return scaler.fit_transform(scale_data), scaler
+        else:
+            return scaler.transform(scale_data)
 
     def get_scaled_data(self, data):
         """데이터를 스케일링 시킨다."""
@@ -29,9 +32,9 @@ class TrainsData:
         scaled_data = scaled_data[['close', 'open', 'high', 'low', 'volume']]
         scaled_data = scaled_data[scaled_data['close'] != 0]
         scaled_data['close'], scaler_close = self.get_scaled_cols(scaled_data, 'close')
-        scaled_data['open'], _ = self.get_scaled_cols(scaled_data, 'open')
-        scaled_data['high'], _ = self.get_scaled_cols(scaled_data, 'high')
-        scaled_data['low'], _ = self.get_scaled_cols(scaled_data, 'low')
+        scaled_data['open'] = self.get_scaled_cols(scaled_data, 'open', scaler_close)
+        scaled_data['high'] = self.get_scaled_cols(scaled_data, 'high', scaler_close)
+        scaled_data['low'] = self.get_scaled_cols(scaled_data, 'low', scaler_close)
         scaled_data['volume'], _ = self.get_scaled_cols(scaled_data, 'volume')
         return scaled_data, scaler_close;
 

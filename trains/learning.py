@@ -143,7 +143,6 @@ class Learning:
                 if i >= iterations[0] and less_cnt > loss_up_count and rmse_max > min_rmse_val:
                     break
             # draw_plot(rmse_vals, max_test_predict, testY, comp_name)
-        sess.close()
         return min_rmse_val, train_count, rmse_vals, max_test_predict
 
     def let_learning(self, comp_code, data_params):

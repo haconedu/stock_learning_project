@@ -3,9 +3,9 @@ class TrainParams:
     """학습을 위한 파라미터를 정의한다."""
 
     def __init__(self, model_type='ALL_CORPS'):
-        self.seq_length = 10  # 시퀀스 갯수
+        self.seq_length = 15  # 시퀀스 갯수
         self.data_dim = 5  # 입력 데이터 갯수
-        self.dropout_keep = 0.5  # dropout
+        self.dropout_keep = 0.6  # dropout
         self.output_dim = 1  # 출력 데이터 갯수
         self.learning_rate = 0.0001
         self.rmse_max = 0.05
@@ -25,13 +25,13 @@ class TrainParams:
         self.invest_type = 'default'
         self.session_file_name = model_type
         self.result_file_name = model_type.lower() + '_result'
-        self.remove_stock_days = 0
+        self.remove_stock_days = 1
 
         if model_type == 'EACH':
             self.is_all_corps_model = False
-
+        
         elif model_type == 'FORCAST':
-            self.is_all_corps_model = False
+            self.is_all_corps_model = True
             #self.session_file_name = 'ALL_CORPS'
             self.result_type = 'forcast'
             self.invest_count = 0

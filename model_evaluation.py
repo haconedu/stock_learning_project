@@ -52,4 +52,4 @@ def twins(start_no=1):
     
 
 if __name__ == '__main__':
-    train()
+    top10_model()
