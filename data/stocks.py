@@ -8,6 +8,9 @@ from data.data_utils import DataUtils
 class Stocks:
     """ 주식데이터  """
 
+    def __init__(self, params):
+        self.params = params
+
     def _get_naver_url(self, comp_code):
         """ 네이버 금융(http://finance.naver.com)에 넣어줌 """
         return 'http://finance.naver.com/item/sise_day.nhn?code={code}'.format(code=comp_code)
@@ -78,4 +81,7 @@ class Stocks:
         else:
             stock_data = self._get_stock_naver_data(comp_code, '')
             stock_data.to_csv(file_path, index=False)
+
+        if self.params.remove_stock_days > 0:
+            stock_data = stock_data[:-self.params.remove_stock_days]
         return stock_data

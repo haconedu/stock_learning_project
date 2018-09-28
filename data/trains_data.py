@@ -45,20 +45,11 @@ class TrainsData:
         seq_length = self.params.seq_length
         y_len = len(y)
 
-        if not self.params.y_is_up_down:
-            for i in range(0, y_len - seq_length):
-                _x = x[i:i + seq_length]
-                _y = y[i + seq_length]  # Next close price
-                dataX.append(_x)
-                dataY.append(_y)
-        else:
-            for i in range(0, y_len - seq_length):
-                _x = x[i:i + seq_length]
-                _y = [-1]
-                if 0 != i and y[i + seq_length] > y[i + seq_length -1]:
-                    _y = [1]
-                dataX.append(_x)
-                dataY.append(_y)
+        for i in range(0, y_len - seq_length):
+            _x = x[i:i + seq_length]
+            _y = y[i + seq_length]  # Next close price
+            dataX.append(_x)
+            dataY.append(_y)
 
         dataX_last = [x[y_len - seq_length: y_len]]
         return dataX, dataY, y, dataX_last

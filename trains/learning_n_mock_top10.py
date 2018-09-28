@@ -52,19 +52,18 @@ class LearningNMockTop10:
             corp_code = corp_data['종목코드']
         else:
             corp_code = invest_row[1]
-        stocks = Stocks()
+        stocks = Stocks(self.params)
         stock_data = stocks.get_stock_data(corp_code)
         stock_data_now = stock_data[:i - invest_count]
         rmse_val, train_cnt, data_params, dataX_last, scaler_close = learning_invest.let_train_only(corp_code, stock_data_now)
 
-        last_money, last_predict, invest_predicts, all_invest_money, now_stock_cnt, all_stock_count = \
-            invest.let_invest(corp_code, train_cnt, dataX_last, data_params)
+        last_money, last_predict, invest_predicts, all_invest_money = invest.let_invest(corp_code, dataX_last, data_params)
         last_close_money, last_pred_money = invest.get_real_money(data_params, scaler_close, last_predict)
         last_pred_ratio = (last_pred_money - last_close_money) / last_close_money * 100
 
         if invest_row is None:
             corp_name = corp_data['회사명']
-            all_invest_money, all_stock_count = invest.buy_stock(self.params.invest_money, last_close_money, now_stock_cnt)
+            all_invest_money, all_stock_count = invest.buy_stock(self.params.invest_money, last_close_money, 0)
             invest_row = [j, corp_code, corp_name, last_pred_ratio, last_close_money, 0, 0, all_invest_money, all_stock_count]
         else:
             #print(invest_row)
@@ -85,14 +84,13 @@ class LearningNMockTop10:
         else:
             selled_cnt = 0
             total_money = 0
-
-            top_cnt = 0;
+            top_cnt = 0
             for i in range(data_len):
                 invest_row = invest_data[i]
+                last_pred_ratio = invest_row[3]
                 now_close = invest_row[4]
                 last_money = invest_row[5]
                 now_stock_cnt = invest_row[6]
-                last_pred_ratio = invest_row[3]
 
                 if last_pred_ratio < self.MAX_PERCENT and top_cnt < 10:
                     top_cnt += 1
@@ -108,6 +106,7 @@ class LearningNMockTop10:
 
         # 주식을 구매한다.
         top_cnt = 0
+        allow_money = total_money / (10 - selled_cnt)
         for i in range(data_len):
             invest_row = invest_data[i]
             last_pred_ratio = invest_row[3]
@@ -117,7 +116,6 @@ class LearningNMockTop10:
                 now_stock_cnt = invest_row[6]
                 if now_stock_cnt == 0:
                     now_close = invest_row[4]
-                    allow_money = total_money / (10-selled_cnt)
                     now_money, now_stock_cnt = invest.buy_stock(allow_money, now_close, now_stock_cnt)
                     invest_row[5] = now_money
                     invest_row[6] = now_stock_cnt

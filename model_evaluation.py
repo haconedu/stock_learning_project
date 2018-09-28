@@ -29,26 +29,13 @@ def train_all_corps(type='ALL_CORPS', start_no=1):
     invests.let_train_invests(corps, start_no)
 
 
-def train_up_down(start_no=1):
-    """결과를 1,0으로 학습"""
-    corps = get_corps()
-
-    params = TrainParams()
-    params.is_all_corps_model = True
-    params.result_file_name = 'training_invest_all_updown_result'
-    params.session_file_name = 'ALL_CORPS_UPDOWN'
-    params.y_is_up_down = True
-    invests = LearningNMockInvestment(params)
-    invests.let_train_invests(corps, start_no)
-
-
 def top10_model():
     corp = Corp()
     corps = corp.get_eval_corps()
 
     params = TrainParams()
     params.invest_type = 'top10'
-    params.result_file_name = "training_invest_top10_result"
+    params.result_file_name = "top10_result"
     invests = LearningNMockTop10(params)
     invests.let_train_invests_top10(corps)
 

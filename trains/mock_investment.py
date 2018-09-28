@@ -13,13 +13,6 @@ class MockInvestment:
 
     def let_invest_money(self, invest_predict, now_scaled_close, now_close, now_money, now_stock_cnt):
         """예측 값에 따라 매수 매도를 실행한다."""
-        if not self.params.y_is_up_down:
-            return self.let_invest_money_value(invest_predict, now_scaled_close, now_close, now_money, now_stock_cnt)
-        else:
-            return self.let_invest_money_up_down(invest_predict, now_close, now_money, now_stock_cnt)
-
-    def let_invest_money_value(self, invest_predict, now_scaled_close, now_close, now_money, now_stock_cnt):
-        """예측 값에 따라 매수 매도를 실행한다."""
         invest_min_percent = self.params.invest_min_percent
 
         if now_scaled_close == 0:
@@ -29,14 +22,6 @@ class MockInvestment:
         if ratio > invest_min_percent:
             now_money, now_stock_cnt = self.buy_stock(now_money, now_close, now_stock_cnt)
         elif ratio < -invest_min_percent:
-            now_money, now_stock_cnt = self.sell_stock(now_money, now_close, now_stock_cnt)
-        return now_money, now_stock_cnt
-
-    def let_invest_money_up_down(self, invest_predict, now_close, now_money, now_stock_cnt):
-        """예측 값에 따라 매수 매도를 실행한다."""
-        if invest_predict > 0.01:
-            now_money, now_stock_cnt = self.buy_stock(now_money, now_close, now_stock_cnt)
-        elif invest_predict < -0.01 :
             now_money, now_stock_cnt = self.sell_stock(now_money, now_close, now_stock_cnt)
         return now_money, now_stock_cnt
 
@@ -114,14 +99,14 @@ class MockInvestment:
                 #print(invest_predict, now_scaled_close, now_close)
                 invest_money, now_stock_cnt = self.let_invest_money(invest_predict, now_scaled_close, now_close,
                                                                     invest_money, now_stock_cnt)
-                all_invest_money, all_stock_count = self.let_invest_money(10.0, now_scaled_close, now_close,
-                                                                          all_invest_money, all_stock_count)
+                if i == 0:
+                    all_invest_money, all_stock_count = self.let_invest_money(10.0, now_scaled_close, now_close,
+                                                                              all_invest_money, all_stock_count)
 
             invest_money += self.to_money(now_stock_cnt, now_close)
             all_invest_money += self.to_money(all_stock_count, now_close)
 
             last_predict = sess.run(Y_pred, feed_dict={X: dataX_last, output_keep_prob: 1.0})
-            sess.close()
         # print(now_money)
         return invest_money, last_predict, predicts, all_invest_money
 
