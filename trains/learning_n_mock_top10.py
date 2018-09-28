@@ -12,9 +12,10 @@ class LearningNMockTop10:
     """학습시키고 too10을 구입하는 방법으로 모의투자를 실행한다."""
 
     # 학습 결과의 컬럼명 정의
-    RESULT_COLUMNS = ['no', 'code', 'name', 'last_pred_ratio', 'last_close_money', 'last_money', 'stock_count', 'all_invest_result', 'all_stock_count']
+    RESULT_COLUMNS = ['no', 'code', 'name', 'last_pred_ratio', 'last_close_money', 'last_money', 'stock_count', 'all_invest_result', 'all_stock_count', 'rmse']
 
     MAX_PERCENT = 30
+    MAX_RMSE = 0.3
 
     def __init__(self, params):
         self.params = params
@@ -36,7 +37,7 @@ class LearningNMockTop10:
                 #print(i, j, invest_row)
                 j += 1
             self.let_invest_top10(i,invest_data)
-            print()
+            print(invest_data)
         self.sell_all_stock(invest_data)
         print("final", invest_data)
         df_invest_data = pd.DataFrame(invest_data, columns=self.RESULT_COLUMNS)
@@ -64,12 +65,15 @@ class LearningNMockTop10:
         if invest_row is None:
             corp_name = corp_data['회사명']
             all_invest_money, all_stock_count = invest.buy_stock(self.params.invest_money, last_close_money, 0)
-            invest_row = [j, corp_code, corp_name, last_pred_ratio, last_close_money, 0, 0, all_invest_money, all_stock_count]
+            invest_row = [j, corp_code, corp_name, last_pred_ratio, last_close_money, 0, 0, all_invest_money, all_stock_count, rmse_val]
         else:
             #print(invest_row)
             invest_row[3] = last_pred_ratio
             invest_row[4] = last_close_money
         return invest_row
+
+    def is_top10(self, last_pred_ratio, top_cnt, rmse):
+        return last_pred_ratio < self.MAX_PERCENT and top_cnt < 10 and rmse < self.MAX_RMSE
 
     def let_invest_top10(self, i, invest_data):
         """ top10 방법으로 모의투자한다."""
@@ -91,8 +95,9 @@ class LearningNMockTop10:
                 now_close = invest_row[4]
                 last_money = invest_row[5]
                 now_stock_cnt = invest_row[6]
+                rmse = invest_row[9]
 
-                if last_pred_ratio < self.MAX_PERCENT and top_cnt < 10:
+                if self.is_top10(last_pred_ratio, top_cnt, rmse):
                     top_cnt += 1
                     total_money += last_money
                     invest_row[5] = 0
@@ -110,8 +115,9 @@ class LearningNMockTop10:
         for i in range(data_len):
             invest_row = invest_data[i]
             last_pred_ratio = invest_row[3]
-            if last_pred_ratio < self.MAX_PERCENT and top_cnt < 10:
-                print("before", i, invest_row)
+            rmse = invest_row[9]
+            if self.is_top10(last_pred_ratio, top_cnt, rmse):
+                #print("before", i, invest_row)
                 top_cnt += 1
                 now_stock_cnt = invest_row[6]
                 if now_stock_cnt == 0:
@@ -119,7 +125,7 @@ class LearningNMockTop10:
                     now_money, now_stock_cnt = invest.buy_stock(allow_money, now_close, now_stock_cnt)
                     invest_row[5] = now_money
                     invest_row[6] = now_stock_cnt
-                    print("after", i, invest_row)
+                    #print("after", i, invest_row)
 
         invest_data.sort(key=itemgetter(0))
 
