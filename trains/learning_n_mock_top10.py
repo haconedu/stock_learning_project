@@ -15,7 +15,7 @@ class LearningNMockTop10:
     RESULT_COLUMNS = ['no', 'code', 'name', 'last_pred_ratio', 'last_close_money', 'last_money', 'stock_count', 'all_invest_result', 'all_stock_count', 'rmse']
 
     MAX_PERCENT = 30
-    MAX_RMSE = 0.3
+    MAX_RMSE = 0.03
 
     def __init__(self, params):
         self.params = params
